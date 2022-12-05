@@ -1,0 +1,51 @@
+% Robin Prillwitz 2022
+
+\setcounter{page}{1}
+\input{./src/frontmatter/titlepage.tex}
+\newpage
+
+% \frontmatter
+\thispagestyle{empty}
+\clearpage\null
+\newpage
+\pagestyle{plain}
+
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+\input{./src/frontmatter/abstract.tex}
+\newpage
+
+% Table of Contents
+\tableofcontents
+
+\newpage
+
+\addcontentsline{toc}{section}{Verzeichnisse}
+
+% Table of Tables
+% \listoftables
+
+\subsubsection*{Symbolverzeichnis}
+\addcontentsline{toc}{subsection}{Symbolverzeichnis}
+
+\begin{tabular}{c | l}
+\textbf{Symbol} & \textbf{Bedeutung} \\ \hline
+$\textit{IDFT}()$ & Inverse Diskrete Fourier Transformation \\
+$\lfloor\ \rfloor$ & Abrunden, Runden gegen $-\infty$ \\
+$f[x]$ & Zeit-Diskrete, nicht kontinuierliche, Funktion
+\end{tabular}
+
+% Table of Figures
+\listoffigures
+
+% Acronyms
+\setglossarystyle{listdotted}
+\setglossarystyle{tree}
+\setglossarysection{subsection}
+\printacronyms
+
+% GLOSSARY
+\printglossary[]
+
+% \cleartoleftpage

@@ -1,0 +1,87 @@
+% Robin Prillwitz 2022
+{
+\thispagestyle{empty}
+\vspace*{\fill} % Position at the bottom
+\def \colophonwidth {8cm}
+
+\vspace*{0.5em}
+\singlespacing
+\parskip=0pt
+\setstretch{1}\noindent
+
+{\hsize\colophonwidth\hfill\vbox{\parskip=0pt\parfillskip0pt%
+\emergencystretch\colophonwidth\noindent{
+
+    \centersection{Kolophon}
+
+    \begin{center}
+        \begin{tikzpicture}
+        \pgfplotsset{colormap={}{color=(THDWhite) color=(THDGrey) }}
+        \begin{axis}[
+            width=10cm,
+            hide axis,
+            enlargelimits=false,
+            disabledatascaling,
+            % view={23.5}{30},
+            view={20}{50},
+            % domain=-2:2,
+            % domain y =-2:2,
+            shader=interp,
+            % z buffer=sort,
+        ]
+        \begin{scope}[blend group=darken]
+            % \addplot3[mesh, samples=200]{(sin(deg(x*pi))/(x*pi)) * (sin(deg(y*pi))/(y*pi))};
+            \addplot3[
+                mesh,
+                % opacity=0.5,
+                domain=-1.5:1.5,
+                y domain=0:360,
+                samples=100,
+                samples y=50,
+                ]
+            (
+                {x*cos(y)}, {x*sin(y)},
+                {(sin(deg(x*cos(y)*pi))/(x*cos(y)*pi)) * (sin(deg(x*sin(y)*pi))/(x*sin(y)*pi))}
+            );
+        \end{scope}
+        \end{axis}
+     \end{tikzpicture}
+     \textcolor{THDGrey!40!THDWhite}{
+     \footnotesize{
+         $$\text{sinc}\left(x,y\right) = \frac{\sin \left( \pi x \right) \sin \left( \pi y\right)}{\pi^2 x y}$$
+         \textit{Sinus Cardinalis}
+    }}
+    \end{center}
+
+    \noindent
+    % \begin{tikzpicture}
+    %     \node[] (A) at (0,0) {};
+    %     \node[] (B) at ($(\colophonwidth - 1.4ex,0)$) {};
+    %     \pgfornamentline[color=THDBrightRed]{A}{B}{1}{88}
+    % \end{tikzpicture}
+
+    \vspace*{6pt}
+
+        Diese Arbeit ist ein \hologo{LaTeX3} Dokument in \textit{Markus Kohm}'s \hologo{KOMAScript} Klasse und wurde in \textit{Minion Pro} 11pt gesetzt.
+        Die Typographie nimmt Inspiration von \textit{Robert Bringhurst} und \textit{Edward Tufte}.
+        Alle Darstellungen sind Eigenkreationen erstellt mit Ti\textit{k}Z, \textsc{pgfplots} und \textsf{Matplotlib}.
+        Kompiliert wurde das Dokument mit \hologo{LuaLaTeX} und \hologo{biber} auf \platformname\ am \today.
+
+    \begin{center}
+        \HighlightColor{\textsc{
+            \authorFirst\;\authorLast
+        }}\\
+        \makeatletter
+        \HighlightColor{\textbf{
+            \@Roman{\the\year}.
+            }}
+        \makeatother
+    \end{center}
+
+    % \color{THDBrightRed}{
+    %     \noindent\hfill\pgfornament[width=20pt]{1}\hfill\null\par
+    % }
+
+}}\hfill}
+
+}

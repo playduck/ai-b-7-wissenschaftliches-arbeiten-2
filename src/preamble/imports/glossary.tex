@@ -1,0 +1,30 @@
+% Robin Prillwitz 2022
+
+\usepackage[
+  acronym, toc
+]{glossaries}
+\usepackage[automake, nonumberlist, nogroupskip]{glossaries-extra}
+
+\renewcommand*{\glsclearpage}{} % remove gloassary pagebreak
+% \renewcommand*{\@@glossarysec}{section}
+\setabbreviationstyle[acronym]{long-short}
+\renewcommand*{\glstextformat}[1]{\textit{#1}} % cursive acronyms
+\renewcommand\glstreepredesc{\tabto{4cm}} % glossary spacing
+
+% --------------------------------- Acronyms -------------------------------- %
+\newacronym{snr}{SNR}{Signal to Noise Ratio}
+% \newacronym{fpu}{FPU}{\gls{floating point} Unit}
+% \newacronym{fft}{FFT}{Fast Fourier Transform}
+\newacronym{dac}{DAC}{Digital Analog Converter}
+\newacronym{lsb}{LSB}{Least Significant Bit}
+\newacronym{tpdf}{TPDF}{Triangular Probability Density Funtion}
+\newacronym{fir}{FIR}{Finite Impulse Response}
+\newacronym{iir}{IIR}{Infinite Impulse Response}
+\newacronym{ath}{ATH}{Absolut Threshhold of Hearing}
+
+% --------------------------------- Glossary -------------------------------- %
+\newglossaryentry{floating point}{name={Floating Point}, description={Gleitkommazahl}}
+\newglossaryentry{fixed point}{name={Fixed Point}, description={Ganzzahl}}
+\newglossaryentry{dBFS}{name={dBFS}, description={Dezibel Full-Scale}}
+
+\makeglossaries

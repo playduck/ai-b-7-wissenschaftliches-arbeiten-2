@@ -1,0 +1,38 @@
+% Robin Prillwitz 2022
+
+\KOMAoptions{
+  fontsize      = 11pt,
+  paper         = a4,
+  twoside       = true,
+  parskip       = half,
+  pagesize      = false,
+  % chapterprefix = false,
+  listof        = totoc,
+  listof        = leveldown,
+  usegeometry   = true,
+}
+\usepackage{scrhack}
+
+\input{./src/preamble/imports/colors.tex}
+\input{./src/preamble/imports/setup.tex}
+\input{./src/preamble/imports/fonts.tex}
+\input{./src/preamble/imports/macros.tex}
+\input{./src/preamble/imports/tikz.tex}
+\input{./src/preamble/imports/code.tex}
+\input{./src/preamble/imports/bibliography.tex}
+\input{./src/preamble/imports/glossary.tex}
+
+\input{./src/preamble/meta.tex}
+
+% LINKS
+\usepackage[hidelinks]{hyperref}
+\urlstyle{tt}
+
+% KOMA Layout & Margins
+\KOMAoptions{
+  mpinclude=false,
+  BCOR=15mm,
+  DIV=9
+}
+% for use with marginlines
+% \setlength{\marginparwidth}{2.6\marginparwidth}
