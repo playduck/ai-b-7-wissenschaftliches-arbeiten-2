@@ -18,6 +18,11 @@ mk:
 once:
 	${LC} --shell-escape -output-directory=${OUTPUTDIRECTORY} ${MAINFILE}.tex
 
+.PHONY: bib
+bib:
+	biber -D --output-directory ${OUTPUTDIRECTORY} ${MAINFILE}
+	${LC} --shell-escape -output-directory=${OUTPUTDIRECTORY} ${MAINFILE}.tex
+
 .PHONY: all
 all:
 ifeq ($(OS),Windows_NT)
