@@ -23,5 +23,6 @@
         "!python",
         "!py",
     ],
+    "ltex.language": "de-DE",
 
 }

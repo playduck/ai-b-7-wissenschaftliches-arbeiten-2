@@ -29,7 +29,6 @@
 \usepackage{setspace}% line spacing
 \usepackage{hologo}% Logos of LaTeX and friends
 \usepackage[protrusion=true,expansion,tracking=true,nopatch=eqnum]{microtype}% micro typography adjustments
-\usepackage{lettrine}
 
 \usepackage[inline]{enumitem}% lists and enumerations
 \setlist{itemsep=0em, parsep=0em} % remove inter-item spacing
@@ -59,6 +58,20 @@
 \setuptoc{toc}{leveldown}% toc at section level
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
+
+\DeclareNewTOC[listname={Gleichungsverzeichniss},type=equation]{loe}
+\makeatletter% because of the `@' in `\@currenvir` and `\@ne`
+\newcommand{\setequationentry}[1]{%
+  \begingroup
+    \Ifstr{\@currenvir}{equation}{}{%
+      \advance \value{equation} by \@ne\relax%
+    }%
+    \addxcontentsline{loe}{equation}[\theequation]{#1}%
+  \endgroup
+  \ignorespaces
+}
+\makeatother% because of the `\makeatletter' above
+
 
 % HEADER & FOOTER
 \usepackage{scrlayer}
