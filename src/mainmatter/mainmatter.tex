@@ -13,42 +13,48 @@
 
 \section{Quantisierung und Dither}
 
-Eindimensionale Signale die dem Shannon Abtasttheorem \autocite{shannon} unterliegen sind Zeitlich diskret.
+Eindimensionale Signale, die dem Shannon Abtasttheorem \autocite{shannon} unterliegen sind zeitlich diskret.
 Aufgrund des Theorems kann die originale kontinuierliche Version des Signals ohne Informationsverlust rekonstruiert werden.
 Die Wertemenge eines digitalen Signals wird, aufgrund endlichen Speichers, auch von einer theoretisch unendlich kontinuierlichen auf eine diskrete Wertemenge abgebildet.
 Bei diesem Vorgang, der Quantisierung, gehen Informationen irreversibel verloren.
 Ein solches diskretes Signal ist in \autoref{fig:quantized-signal} gezeigt.
 In der digitalen Signalverarbeitung von Audiosignalen können sowohl \gls{floating point} als auch \gls{fixed point} Repräsentationen verwendet werden.
 Der größte Unterschied dabei ist die dynamische Reichweite -- die Differenz zwischen dem Minimum und Maximum.
-\autoref{tab:dynamic-range} führt die Reichweiten verschiedener Formate nach \autocite{32bit} auf.
-Aufgrund der enorm großen Dynamik und der Einfachheit der Implementation ist \gls{floating point} oft die Wahl für die Implementation für digitale Signalverarbeitung.
+\autoref{tab:dynamic-range} führt die Reichweiten verschiedener Formate nach \citeauthor{dsp-guide} auf.
+Aufgrund der enorm großen Dynamik und der Einfachheit der Implementation ist \gls{floating point} oft die Wahl für die Implementation für digitale Signalverarbeitung \autocite[S. 68ff]{dsp-guide}.
 
 Zur Reproduktion von verarbeiteten Daten auf Endgeräten durch einen \gls{dac} oder auch nur zur endgültigen Speicherung oder Distribution wird eine \gls{fixed point} Repräsentation erfordert.
 % \glsplural{dac} aktzeptieren generell keine Daten im \gls{floating point} Format.
 % Onehin kann kein Gerät eine analoge Spannung oder Strom mit einer solchen Dynamik wiedergeben.
 % Zur Speicherung und Distribution lohnt sich eine Effizientere Kodierung der Daten zu benutzten.
 Daher ergibt sich die Notwendigkeit für Quantisierung.
-Eine Quantisierungsfunktion $Q$ wird nach \autocite{dither} für eine beliebige Quantisierungsgröße $\Delta$ definiert als
+Eine Quantisierungsfunktion $Q$ wird nach \citeauthor{dither} für eine beliebige Quantisierungsgröße $\Delta$ definiert als
 \begin{equation}
-Q[n] = \Delta \left\lfloor \frac{n}{\Delta} + \frac{1}{2} \right\rfloor
+    \setequationentry{\foreignquote{english}{Mid-tread} Quantisierungsfunktion}
+    Q[n] = \Delta \left\lfloor \frac{n}{\Delta} + \frac{1}{2} \right\rfloor
 \end{equation}
-für einen arbiträren Abtastwert an Index $n$.
-Der Wert $\Delta$ repräsentiert dabei nach \autocite{dither} die Größe eines \gls{lsb}.
+
+für einen arbiträren Abtastwert an Index $n$ \autocite[S. 500]{dither}.
+Der Wert $\Delta$ repräsentiert dabei nach \citeauthor{dither} die Größe eines \gls{lsb}.
 Der durch die Quantisierung entstehende absolute numerische Fehler ist die Differenz dessen mit dem Eingang
 \begin{equation}
+\setequationentry{Quantisierungsfehler}
 E[n] = Q[n] - n
 \end{equation}
+
 Dieser Fehler ist periodisch und manifestiert sich als harmonische Verzerrung \autocites{dither}{noise-shaping}.
 Diese ist in den meisten Anwendungsfällen eine unerwünschte Eigenschaft.
 \marginline{Quantisierungsfehler können kreative Anwendung in der Musikproduktion finden.}
 
 Aufgrund des Informationsverlusts durch die Quantisierung kann die Verzerrung des Signals nicht eliminiert werden.
-Durch das hinzufügen von nichtdeterministischem Rauschen -- dem Dither -- vor der Quantisierung kann die Periodizität der Quantisierung reduziert werden.
+Durch das Hinzufügen von nichtdeterministischem Rauschen -- dem Dither -- vor der Quantisierung kann die Periodizität der Quantisierung reduziert werden.
 Das Signal bleibt jedoch verzerrt, nur nicht harmonisch.
-Das Dither ist spektral Uniform und nimmt oft eine \gls{tpdf} verteilte Amplitude von $1$ \gls{lsb} an \autocite{dither}.
-\marginline{Eine absolut positives Dither Signal darf nur subtraktiv gemischt werden um Überläufe zu vermeiden.}
+Das Dither ist spektral Uniform und wird oft in einer \gls{tpdf} verwendet.
+\gls{tpdf} bezieht sich auf die Form, die das Histogramm der Ditherwerte über einen längeren Zeitraum annimmt.
+Ein \gls{tpdf} Dither setzt sich aus zwei unabhängigen Rauschquellen mit je einer Amplitude von $1$ \gls{lsb} zusammen \autocites{dither}[S. 23ff]{dsp-guide}.
+% \marginline{Eine absolut positives Dither Signal darf nur subtraktiv gemischt werden um Überläufe zu vermeiden.}
 Damit kann die harmonische Verzerrung des quantisierten Signals mit einem durch das Dither induzierten geringeren \gls{snr} \enquote{getauscht} werden.
-Das Signal ist frei von unerwünschten Übertönen, Jedoch nun mit einem stärkeren, spektral uniformem, Grundrauschen \autocites{dither}{noise-shaping}.
+Das Signal ist frei von unerwünschten Übertönen, jedoch nun mit einem stärkeren, spektral uniformem, Grundrauschen \autocites{dither}{noise-shaping}.
 Für viele Anwendungsfälle ist dieser Ausgangszustand zufriedenstellend.
 
 \begin{figure}[]
@@ -94,6 +100,7 @@ Für viele Anwendungsfälle ist dieser Ausgangszustand zufriedenstellend.
 
 \begin{table}[]
     \centering
+    \caption[Dynamische Reichweite verschiedener Formate]{Dynamische Reichweite verschiedener Formate}
     \begin{tabular}{|l|c|c|c|}
         \hline
         \textbf{Format} & \textbf{Min} in \gls{dBFS} & \textbf{Max} in \gls{dBFS} & \textbf{Dynamik} in \gls{dBFS} \\ \hline \hline
@@ -103,7 +110,6 @@ Für viele Anwendungsfälle ist dieser Ausgangszustand zufriedenstellend.
         32-Bit Fixed & $-192$ & $0$ & $192$ \\ \hline
         32-Bit Float & $-758$ & $770$ & $1528$ \\ \hline
     \end{tabular}
-    \caption[Dynamische Reichweite verschiedener Formate]{Dynamische Reichweite verschiedener Formate aus \autocite{32bit}.}
     \label{tab:dynamic-range}
 \end{table}
 
@@ -248,7 +254,7 @@ Das Ziel der Rauschformung ist es, einen Filter $H[z]$ zu konzipieren, um das Ra
         \end{tikzpicture}
         \caption{Mit Rauschformung}
     \end{subfigure}
-    \caption[Rauschspektra mit und ohne Rauschformung]{Rauschspektra mit und ohne Rauschformung. In grün wird dar Spektralbereich des Signals gezeigt. Der rote Graph zeigt das Quantisierungsrauschen. Der schattierte Bereich zeigt die Schnittmenge des Rauschens im Signal. $A$ und $B$ sind die Flächen unter dem roten Graphen, es gilt $A_1+B_1 \equiv A_2 + B_2$. Jedoch ist $A_2 < A_1$.}
+    \caption[Rauschspektren mit und ohne Rauschformung]{Rauschspektren mit und ohne Rauschformung. In Grün wird dar Spektralbereich des Signals gezeigt. Der rote Graph zeigt das Quantisierungsrauschen. Der schattierte Bereich zeigt die Schnittmenge des Rauschens im Signal. $A$ und $B$ sind die Flächen unter dem roten Graphen, es gilt $A_1+B_1 \equiv A_2 + B_2$. Jedoch ist $A_2 < A_1$.}
     \label{fig:noise-shaping-spectrum}
 \end{figure}
 
@@ -260,6 +266,7 @@ Eine \gls{iir} Implementation ist jedoch aufgrund der nicht-konstanten Verzöger
 Da temporale Verzerrungen durch den Filter unerwünschte Interferenzen erzeugen könnten.
 Der Filter wird somit als \gls{fir} in folgender Form aus \autocite{noise-shaping} definiert
 \begin{equation}
+\setequationentry{\acrshort{fir} Filter Übertragungsfunktion}
 H[z] = \sum_{n=0}^{N-1} h[n] z^{-1}
 \end{equation}
 Dabei ist $N$ die Länge des Filters und $h[n]$ die Koeffizienten.
@@ -273,6 +280,7 @@ Dieser Vorgang ist abhängig von der jeweiligen Funktion.
 Die arbiträre Funktion wird dann nach dem Häufigkeitsstichprobenverfahren numerisch zu Filter Koeffizienten umgewandelt.
 Dabei wird die Funktion aus \autocite{frequency-sampling-method} zuerst diskretisiert mit
 \begin{equation}
+\setequationentry{Auswertung der Zielfunktion für das Häufigkeitsstichprobenverfahren}
 W[k] = W \left( \frac{2\pi k}{N} \right) \quad k \in 0,1,2,\ldots,N-1
 \end{equation}
 % Da angenommen wird, dass
@@ -282,10 +290,12 @@ W[k] = W \left( \frac{2\pi k}{N} \right) \quad k \in 0,1,2,\ldots,N-1
 Da der Kernel (die Koeffizienten) eines \gls{fir} Filters $h[n]$ per Definition die Antwort des Filters auf einen Dirac-Impuls $\delta[n]$ ist, können wir diese durch die inverse Fourier Transformation der Übertragungsfunktion von dem Bildbereich in den Zeitbereich gewinnen \autocites{frequency-sampling-method}{frequency-sampling-method-2}{SASPWEB2011}.
 Es folgt, dass im kontinuierlichen Raum gilt
 \begin{equation}
+\setequationentry{Inversefouriertransformation im kontinuierlichen Zeitbereich}
 h(t) = \frac{1}{2\pi} \int_{-\pi}^{\pi} W(\omega) e^{j t \omega} \text{d} \omega
 \end{equation}
 Diskret kann das angenähert werden durch
 \begin{equation}
+\setequationentry{Diskrete Inversefouriertransformation für \acrshort{fir} Koeffizienten}
 h[n] = s \cdot \left| \textit{IDFT} \left( W[k] \right) \right| \cdot c[n]
 \label{eq:coeffiecients}
 \end{equation}
@@ -299,6 +309,7 @@ Der Faktor $s$ ist ein beliebiger Skalar um die Koeffizienten zu skalieren.
 Das Fenster $c[n]$ aus \autoref{eq:coeffiecients} kann frei gewählt werden, auch wenn manche bestimmten Fenster vor allem bei dieser Methode Nachteile abschwächen können \autocite{frequency-sampling-method-2}.
 Dieses kann eine einfaches Kosinus Fenster sein, um die Trunkierungsartefakte zu minimieren
 \begin{equation}
+\setequationentry{Kosinusfensterfunktion}
 c[n] = \frac{1}{2} \cos \left( \frac{2\pi \left( x - \frac{N}{2}\right) }{N}\right) + \frac{1}{2}
 \end{equation}
 
@@ -313,15 +324,17 @@ Wir erhalten die Funktion $A(\omega)$.
 Es kann nun durch Hartes oder Soft-Clipping ein Maximum der Funktion festgelegt werden.
 Beispielsweise kann
 \begin{equation}
+\setequationentry{Soft-Clipping Sättigungsfunktion}
 S(m, \omega) = m \tanh \left( \frac{A(\omega)}{m} \right)
 \end{equation}
 als Soft-Clipping Funktion mit dem Maximum $m$ verwendet werden.
-Durch das numerische Lösen eines \foreignquote{english}{Least-Squares} Problems, wie in \autocite{noise-shaping}, kann ein optimaler Gain gefunden werden.
+Durch das numerische Lösen eines \foreignquote{english}{Least-Squares} Problems, wie in \citeauthor{noise-shaping}, kann ein optimaler Gain gefunden werden.
 Dafür muss das globale Minimum von dem Gain $g$ für
 \begin{equation}
+\setequationentry{Gainoptimierung der Zielfunktion}
 f(g, m) = \left( \frac{1}{\pi} \int_{0}^{\pi} S(m, \omega) + g \text{d}\omega \right)^2 = 0
 \end{equation}
-gefunden werden.
+gefunden werden \autocite{noise-shaping}.
 
 \section{Diskussion}
 
