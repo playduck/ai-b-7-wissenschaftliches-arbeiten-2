@@ -13,7 +13,7 @@
 
 \section{Quantisierung und Dither}
 
-Eindimensionale Signale, die dem Shannon Abtasttheorem \autocite{shannon} unterliegen, sind temporal diskret.
+Eindimensionale Signale, die dem \citeauthor{shannon} Abtasttheorem \autocite{shannon} unterliegen, sind temporal diskret.
 Aufgrund des Theorems kann die originale kontinuierliche Version des Signals ohne Informationsverlust rekonstruiert werden.
 Die Wertemenge eines digitalen Signals wird, aufgrund nur endlichen Speichers, von einer theoretisch unendlich kontinuierlichen auf eine definiert begrenzte Wertemenge abgebildet.
 Bei diesem Vorgang, der Quantisierung, gehen Informationen irreversibel verloren.
@@ -28,7 +28,7 @@ Zur Reproduktion von verarbeiteten Daten auf Endgeräten durch einen \gls{dac} o
 % \glsplural{dac} aktzeptieren generell keine Daten im \gls{floating point} Format.
 % Onehin kann kein Gerät eine analoge Spannung oder Strom mit einer solchen Dynamik wiedergeben.
 % Zur Speicherung und Distribution lohnt sich eine Effizientere Kodierung der Daten zu benutzten.
-Daher ergibt sich die Notwendigkeit für Quantisierung: Die Konvertierung eines Signals von einer hohen zu einer niedrigen Bit-Tiefe.
+Daher ergibt sich die Notwendigkeit für Quantisierung: die Konvertierung eines Signals von einer hohen zu einer niedrigen Bit-Tiefe.
 Eine Quantisierungsfunktion $Q$ wird nach \citeauthor{dither} für eine beliebige Quantisierungsgröße $\Delta$ definiert als
 \begin{equation}
     \setequationentry{\foreignquote{english}{Mid-tread} Quantisierungsfunktion}
@@ -106,7 +106,7 @@ Der Ideal-Zustand, ein Signal ohne Verzerrung, ist mit niedrigerer Bit-Tiefe une
     \caption[Dynamische Reichweite verschiedener Formate]{Dynamische Reichweite verschiedener Formate}
     \begin{tabular}{|l|c|c|c|}
         \hline
-        \textbf{Format} & \textbf{Min} in \gls{dBFS} & \textbf{Max} in \gls{dBFS} & \textbf{Dynamik} in \gls{dBFS} \\ \hline \hline
+        \textbf{Format} & \textbf{Min} in \gls{dBFS} & \textbf{Max} in \gls{dBFS} & \textbf{Dynamik} in \textit{dB} \\ \hline \hline
         8-Bit Fixed & $-48$ & $0$ & $48$ \\ \hline
         16-Bit Fixed & $-96$ & $0$ & $96$ \\ \hline
         24-Bit Fixed & $-144$ & $0$ & $144$ \\ \hline
@@ -128,10 +128,10 @@ Die schematische Darstellung dieses ist in \autoref{fig:noise-shaping} aus \auto
 \autoref{fig:noise-shaping-spectrum} zeigt ein erwünschtes Beispiel von Rauschformung im Spektralbereich.
 Ein spektral uniformes Rauschen wird so manipuliert, sodass es nur minimal in einem bestimmten Frequenzbereich auftritt.
 In Audioanwendungen liegt die generell anerkannte maximal reproduzierbare Frequenz bei $20\si{kHz}$.
-Bei Abtastraten von nur dem doppelten (standardmäßig $44.1\si{kHz}$ oder $48\si{kHz}$) überdecken sich die Spektren des Rauschen mit dem Signal immer.
+Bei Abtastraten von nur dem doppelten (standardmäßig $44.1\si{kHz}$ oder $48\si{kHz}$) überdecken sich die Spektren des Rauschen mit dem des Signals immer.
 Bei identischer Bandbreite des Signals, jedoch höheren Abtastraten, wie $96\si{kHz}$ oder $192\si{kHz}$ kann mehr Quantisierungsrauschen in höhere, für das Signal irrelevante, Oktaven verschoben werden.
 Dadurch wird der Effekt der Rauschformung verstärkt.
-Hohe Abtastraten sind jedoch speicherplatz- und rechenintensiver und somit oft nicht praktikabel.
+Hohe Abtastraten sind jedoch Speicherplatz- und rechenintensiver und somit oft nicht praktikabel.
 
 Das Ziel der Rauschformung ist es, einen Filter $H[z]$ zu konzipieren, um das Rauschen in einem System kontrolliert zu manipulieren.
 

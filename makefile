@@ -1,6 +1,8 @@
 OUTPUTDIRECTORY = dist
 MAINFILE = document
 LC = lualatex
+NOTEBOOKDIRECTORY = code
+NOTEBOOK = noise
 
 ifeq ($(OS),Windows_NT)
 	OPEN = start texworks
@@ -21,6 +23,11 @@ once:
 .PHONY: bib
 bib:
 	biber -D --output-directory ${OUTPUTDIRECTORY} ${MAINFILE}
+	${LC} --shell-escape -output-directory=${OUTPUTDIRECTORY} ${MAINFILE}.tex
+
+.PHONY: notebook
+notebook:
+	pandoc --listings --dpi=300 --extract-media=./img/ -o ./${NOTEBOOKDIRECTORY}/${NOTEBOOK}.tex -f ipynb+raw_tex+implicit_figures ./${NOTEBOOKDIRECTORY}/${NOTEBOOK}.ipynb
 	${LC} --shell-escape -output-directory=${OUTPUTDIRECTORY} ${MAINFILE}.tex
 
 .PHONY: all
