@@ -56,6 +56,8 @@ Diese Implementation ist dem Standard entnommen und lediglich nach
 \texttt{Python} konvertiert.
 
 \begin{lstlisting}[language=Python]
+# adapted from Jeff Tackett
+# https://www.mathworks.com/matlabcentral/fileexchange/7028-iso-226-equal-loudness-level-contour-signal
 def ISO226(phon):
     f = np.array([20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1000, 1250, 1600, 2000, 2500, 3150, 4000, 5000, 6300, 8000, 10000, 12500])
     af = np.array([0.532, 0.506, 0.480, 0.455, 0.432, 0.409, 0.387, 0.367, 0.349, 0.330, 0.315, 0.301, 0.288, 0.276, 0.267, 0.259, 0.253, 0.250, 0.246, 0.244, 0.243, 0.243, 0.243, 0.242, 0.242, 0.245, 0.254, 0.271, 0.301])
@@ -249,15 +251,36 @@ plt.show()
 
 \includegraphics{./img/de9c4c704937869e21407a577db0ca1c99eb2ed8.png}
 
-\hypertarget{quantisierung-und-dither}{%
-\subsubsection{Quantisierung und
-Dither}\label{quantisierung-und-dither}}
+\hypertarget{dither}{%
+\subsubsection{Dither}\label{dither}}
 
 \begin{lstlisting}[language=Python]
 # TPDF dither using two uncorellated noise sources
 dither = np.random.rand(len(signal)) + np.random.rand(len(signal))
 dither_scaled = (dither * (2**8)).astype(np.int16) # scale dither (usually only to 1 LSB)
 
+fig, axs = plt.subplots(1, 2)
+axs[0].hist(dither, facecolor="#17a2b0", lw=1, ec="w")
+axs[0].plot([0, FS/5, 0], color="#f18700", linestyle="dashed")
+axs[0].set_title("Dither histogram")
+plt.xlabel("value")
+
+axs[1].plot(np.abs(fft(dither)[1:FS//2]), color="#17a2b0", lw=1)
+axs[1].grid(which="both", linewidth=0.2)
+axs[1].loglog()
+axs[1].set_ylim(ylim)
+axs[1].set_title("Dither spectrum")
+plt.xlabel("$f$ in Hz")
+
+plt.show()
+\end{lstlisting}
+
+\includegraphics{./img/c63a50457e301fbac6f54c9be07067882f5cf91c.png}
+
+\hypertarget{quantisierung}{%
+\subsubsection{Quantisierung}\label{quantisierung}}
+
+\begin{lstlisting}[language=Python]
 # apply dither
 signal_scaled_dither = signal_scaled - dither_scaled
 
@@ -281,7 +304,7 @@ plt.gca().set_ylim(ylim)
 plt.show()
 \end{lstlisting}
 
-\includegraphics{./img/c64125e6cae2537b28f868d10f27a05614a96351.png}
+\includegraphics{./img/f7e4a300529452ae2941ee97f44efef8b6dfe4fd.png}
 
 Dieses überzogene Beispiel demonstriert das Quantisierungsrauschen und
 den Effekt des Dithers. Jedes Signal zeigt noch immer den Ton bei
@@ -332,7 +355,7 @@ plt.gca().set_ylim(ylim)
 plt.show()
 \end{lstlisting}
 
-\includegraphics{./img/8b39079d506951c45dafa9c94a1343cd68731ddc.png}
+\includegraphics{./img/ae196e89b8edac3c7e803947e775a4f5c07fa49f.png}
 
 In diesem Beispiel ist die spektrale Formung des Rauschens anschaulich
 demonstriert. Der Effekt ist hier, wie schon mehrmals erwähnt, stark

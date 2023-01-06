@@ -40,12 +40,12 @@ Der Wert $\Delta$ repräsentiert dabei nach \citeauthor{dither} die Größe eine
 Der durch die Quantisierung entstehende absolute numerische Fehler $e$ ist die Differenz dessen mit dem Eingang
 \begin{equation}
 \setequationentry{Quantisierungsfehler}
-e[n] = Q\left[x[n]\right] - x[n]
+e[n] = Q\bigl[x[n]\bigr] - x[n]
 \end{equation}
 
 Dieser Fehler ist in direkter Abhängigkeit zum Eingangssignal und ist daher periodisch und manifestiert sich als harmonische Verzerrung \autocites{dither}{noise-shaping}.
 Diese ist in den meisten Anwendungsfällen eine unerwünschte Eigenschaft.
-% \marginline{Quantisierungsfehler können kreative Anwendung in der Musikproduktion finden.}
+% \footnote{Harmonische Verzerrung kann in der kreativen Audioproduktion Anwendung finden}
 
 Aufgrund des Informationsverlusts durch die Quantisierung entsteht die Verzerrung.
 Diese kann folglich auch nicht aus dem Signal eliminiert werden.
@@ -54,7 +54,7 @@ Das Signal bleibt verzerrt, jedoch ist die Verzerrung nicht mehr harmonisch, son
 Das Dither ist spektral Uniform und wird oft in einer \gls{tpdf} verwendet.
 \gls{tpdf} bezieht sich auf die Form, die das Histogramm der Ditherwerte über einen längeren Zeitraum annimmt.
 Ein \gls{tpdf} Dither setzt sich aus zwei unabhängigen Rauschquellen mit je einer Amplitude von $1$ \gls{lsb} zusammen \autocites{dither}[S. 23ff, S. 30ff, Figure 2-10b]{dsp-guide}.
-% \marginline{Eine absolut positives Dither Signal darf nur subtraktiv gemischt werden um Überläufe zu vermeiden.}
+% \footnote{Bei der Implementation des Dithers muss darauf geachtet werden additive Überläufe und subtraktive Unterläufe zu vermeiden.}
 Damit kann die harmonische Verzerrung des quantisierten Signals mit einem durch das Dither induzierten geringeren \gls{snr} \enquote{getauscht} werden.
 Das Signal ist frei von unerwünschten Übertönen, jedoch nun mit einem stärkeren, spektral uniformem, Grundrauschen \autocites{dither}{noise-shaping}.
 Für viele Anwendungsfälle ist dieser Ausgangszustand zufriedenstellend.
@@ -130,7 +130,7 @@ Die schematische Darstellung dieses ist in \autoref{fig:noise-shaping} aus \auto
 \autoref{fig:noise-shaping-spectrum} zeigt ein erwünschtes Beispiel von Rauschformung im Spektralbereich.
 Ein spektral uniformes Rauschen wird so manipuliert, sodass es nur minimal in einem bestimmten Frequenzbereich auftritt.
 In Audioanwendungen liegt die generell anerkannte maximal reproduzierbare Frequenz bei $20\si{kHz}$.
-Bei Abtastraten von nur dem doppelten (standardmäßig $44.1\si{kHz}$ oder $48\si{kHz}$) überdecken sich die Spektren des Rauschen mit dem des Signals immer.
+Bei Abtastraten von nur dem doppelten (standardmäßig $44.1\si{kHz}$ oder $48\si{kHz}$) überdecken sich das Spektrum des Rauschens mit dem des Signals immer.
 Bei identischer Bandbreite des Signals, jedoch höheren Abtastraten, wie $96\si{kHz}$ oder $192\si{kHz}$ kann mehr Quantisierungsrauschen in höhere, für das Signal irrelevante, Oktaven verschoben werden.
 Dadurch wird der Effekt der Rauschformung verstärkt.
 Hohe Abtastraten sind jedoch Speicherplatz- und rechenintensiver und somit oft nicht praktikabel.
@@ -276,8 +276,7 @@ Der Filter wird somit als \gls{fir} in folgender Form aus \autocite{noise-shapin
 H[z] = \sum_{n=0}^{N-1} h[n] z^{-1}
 \end{equation}
 Dabei ist $N$ die Länge des Filters und $h[n]$ die Koeffizienten.
-\marginline{Die Länge $N$ kann frei gewählt werden, sie sollte jedoch Teil von
-$2^x \forall x \in \mathbb{N}_0^+$ sein.}
+% \footnote{Die Länge $N$ kann frei gewählt werden, sie sollte jedoch Teil von $2^x \forall x \in \mathbb{N}_0^+$ sein.}
 
 Wie in \autocite{noise-shaping} führen wir eine kontinuierliche Zielfunktion $W(\omega)$ ein.
 $N$ sollte so gewählt sein, dass $W$ für eine bestimmte Nyquistfrequenz \autocite{shannon} nicht untertastet wird \autocite{SASPWEB2011}.
@@ -302,45 +301,45 @@ h(t) = \frac{1}{2\pi} \int_{-\pi}^{\pi} W(\omega) e^{j t \omega} \text{d} \omega
 Im diskreten Raum ist dieses angenähert
 \begin{equation}
 \setequationentry{Diskrete Inversefouriertransformation für \acrshort{fir} Koeffizienten}
-h[n] = s \cdot \left| \textit{IDFT} \left( W[k] \right) \right| \cdot c[n]
+h[n] = \bigl| \textit{IDFT} \left( W[k] \right) \bigr| \cdot c[n]
 \label{eq:coeffiecients}
 \end{equation}
-Der Faktor $s$ ist ein beliebiger Skalar um die Koeffizienten zu skalieren.
+% Der Faktor $s$ ist ein beliebiger Skalar um die Koeffizienten zu skalieren.
 % Nach \autocite{frequency-sampling-method} könnte \autoref{eq:coeffiecients} auch explizit geschrieben werden als
 % \begin{equation}
 % h[n] = \frac{1}{2M+1} \left( W[0] + 2 \sum_{k=1}^{M} W[k] \cos \left( n \omega_k \right)  \right)
 % \end{equation}
 % mit $\omega_k = \frac{2\pi}{2N+1}k$ und $M = \frac{N-1}{2}$.
 % Das wäre die inverse diskrete Fourier Tranformation.
-Das Fenster $c[n]$ aus \autoref{eq:coeffiecients} kann frei gewählt werden, auch wenn manche bestimmten Fenster vor allem bei dieser Methode Nachteile abschwächen können \autocite[S. 340f]{frequency-sampling-method-2}.
-Als Beispiel wird hier ein einfaches Kosinus-Fenster benutzt
+Das Fenster $c[n]$ aus \autoref{eq:coeffiecients} kann frei gewählt werden.
+Zu beachten ist jedoch, dass manche bestimmten Fenster vor allem bei dieser Methode Trunkierungsartefakte verringern können \autocite[S. 340f]{frequency-sampling-method-2}.
+Als Beispiel wird hier nur ein einfaches Kosinus-Fenster benutzt
 \begin{equation}
 \setequationentry{Kosinusfensterfunktion}
 c[n] = \frac{1}{2} \cos \left( \frac{2\pi \left( x - \frac{N}{2}\right) }{N}\right) + \frac{1}{2}
 \end{equation}
-Dadurch werden die Trunkierungsartefakte minimiert.
 Die Wahl der Funktion fällt hier nicht auf deren Leistung, sondern auf deren Einfachheit zur Demonstration.
 
 \subsection{Psychoakustisch Ideale Funktion}
 
 Als psychoakustische Funktion kann die nicht-Linearität des menschlichen Ohrs ausgenutzt werden.
 Eine ideale Funktion kann aus einer modifizierten Abwandlung der $0$ Phon \gls{ath} Kurve aus \autocite{iso226} gewonnen werden.
-\marginline{\enquote{Phon} ist eine absolute logarithmische Einheit zur Messung von akustischer Lautstärke definiert in \textit{ISO 532}.}
-Diese kann numerisch generiert werden.
+% \footnote{\enquote{Phon} ist eine absolute logarithmische Einheit zur Messung von akustischer Lautstärke definiert in \textit{ISO 532}.}
+Diese kann numerisch generiert werden \autocite{iso226matlab}.
 Anschließend wird diese durch Interpolation auf die gesamte relevante Bandbreite extrapoliert und in der Amplitude normalisiert werden.
-Wir erhalten die Funktion $A(\omega)$.
+Wir erhalten die Funktion $A(f)$.
 Es kann nun durch Hartes oder Soft-Clipping ein Maximum der Funktion festgelegt werden.
 Beispielsweise kann
 \begin{equation}
 \setequationentry{Soft-Clipping Sättigungsfunktion}
-S(m, \omega) = m \tanh \left( \frac{A(\omega)}{m} \right)
+s(m, f) = m \tanh \left( \frac{A(f)}{m} \right)
 \end{equation}
 als Soft-Clipping Funktion mit dem Maximum $m$ verwendet werden.
 Durch das numerische Lösen eines \foreignquote{english}{Least-Squares} Problems, wie in \citeauthor{noise-shaping}, kann ein optimaler Gain gefunden werden.
 Dafür muss das globale Minimum von dem Gain $g$ für
 \begin{equation}
 \setequationentry{Gainoptimierung der Zielfunktion}
-f(g, m) = \left( \frac{1}{\pi} \int_{0}^{\pi} S(m, \omega) + g \text{d}\omega \right)^2 = 0
+p(g, m) = \left( \frac{1}{\pi} \int_{0}^{\pi} S(m, f) + g  \partial f \right)^2 = 0
 \label{eq:optimize}
 \end{equation}
 gefunden werden \autocite{noise-shaping}.
@@ -357,7 +356,7 @@ Dazu müsste $W[k]$ in einer Abhängigkeit von $x[n]$ oder nur $n$ bzw. $t$ defi
 Dadurch könnte $W[k]$ kontinuierlich angepasst werden, woraus dauernd neue Koeffizienten für $h[n]$ berechnet werden.
 Im Vergleich zu \citeauthor{noise-shaping} liefert diese Methode vergleichbare Resultate.
 Der Unterschied liegt jedoch darin, dass hierbei arbiträre Funktionen verwendet werden können.
-Die \gls{ath} Kurve von \citeauthor{iso226} wurde nur als Beispiel verwendet;
+Die \gls{ath} Kurve von \citeauthor{iso226} und \citeauthor{iso226matlab} wurde nur als Beispiel verwendet;
 arbiträre Kurven können auch für andere Anwendungsgebiete außerhalb von Audio, welche von Rauschformung profitieren, durch diese Methode konstruiert werden.
 Der Vorteil der vorgestellten Methode ist die effiziente Berechnung der Koeffizienten, solang eine hinreichend präparierte Zielfunktion $W[k]$ im Vorhinein existiert.
 
