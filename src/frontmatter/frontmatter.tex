@@ -26,19 +26,6 @@
 % Table of Tables
 % \listoftables
 
-\subsubsection*{Symbolverzeichnis}
-\addcontentsline{toc}{subsection}{Symbolverzeichnis}
-
-\begin{tabularx}{\linewidth}{r | l}
-\textbf{Symbol} & \textbf{Bedeutung} \\
-\hline
-$\textit{IDFT}\left(\ \cdot\ \right)$ & Inverse Diskrete Fourier Transformation \\
-$\lfloor\ \cdot\ \rfloor$ & Abrunden, Runden gegen $-\infty$ \\
-$f\left[\ \cdot \ \right]$ & Zeit-Diskrete, nicht kontinuierliche, Funktion
-\end{tabularx}
-
-\newpage
-
 % Table of Figures
 \listoffigures
 
@@ -59,5 +46,16 @@ $f\left[\ \cdot \ \right]$ & Zeit-Diskrete, nicht kontinuierliche, Funktion
 
 % GLOSSARY
 \printglossary[]
+
+\newpage
+
+\subsubsection*{Symbolverzeichnis}
+\addcontentsline{toc}{subsection}{Symbolverzeichnis}
+
+\begin{tabularx}{\linewidth}{l p{2cm} l}
+$\textit{IDFT}\left(\ \cdot\ \right)$ && Inverse Diskrete Fourier Transformation \\
+$\lfloor\ \cdot\ \rfloor$ && Abrunden, Runden gegen $-\infty$ \\
+$f\left[\ \cdot \ \right]$ && Zeit-Diskrete, nicht kontinuierliche, Funktion
+\end{tabularx}
 
 % \cleartoleftpage
