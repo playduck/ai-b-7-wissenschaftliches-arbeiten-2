@@ -10,6 +10,7 @@
 \pagenumbering{arabic}
 \setcounter{page}{1}
 \pagestyle{scrheadings}
+\mleftright
 
 \section{Quantisierung und Dither}
 
@@ -32,19 +33,19 @@ Daher ergibt sich die Notwendigkeit für Quantisierung: die Konvertierung eines 
 Eine Quantisierungsfunktion $Q$ wird nach \citeauthor{dither} für eine beliebige Quantisierungsgröße $\Delta$ definiert als
 \begin{equation}
     \setequationentry{\foreignquote{english}{Mid-tread} Quantisierungsfunktion}
-    Q[n] = \Delta \left\lfloor \frac{n}{\Delta} + \frac{1}{2} \right\rfloor
+    Q[z] = \Delta \left\lfloor \frac{z}{\Delta} + \frac{1}{2} \right\rfloor
 \end{equation}
-für einen arbiträren Abtastwert an Index $n$.
+für einen arbiträren Wert $z$.
 Der Wert $\Delta$ repräsentiert dabei nach \citeauthor{dither} die Größe eines \gls{lsb}.
-Der durch die Quantisierung entstehende absolute numerische Fehler ist die Differenz dessen mit dem Eingang
+Der durch die Quantisierung entstehende absolute numerische Fehler $e$ ist die Differenz dessen mit dem Eingang
 \begin{equation}
 \setequationentry{Quantisierungsfehler}
-E[n] = Q[n] - n
+e[n] = Q\left[x[n]\right] - x[n]
 \end{equation}
 
-Dieser Fehler ist periodisch und manifestiert sich als harmonische Verzerrung \autocites{dither}{noise-shaping}.
+Dieser Fehler ist in direkter Abhängigkeit zum Eingangssignal und ist daher periodisch und manifestiert sich als harmonische Verzerrung \autocites{dither}{noise-shaping}.
 Diese ist in den meisten Anwendungsfällen eine unerwünschte Eigenschaft.
-\marginline{Quantisierungsfehler können kreative Anwendung in der Musikproduktion finden.}
+% \marginline{Quantisierungsfehler können kreative Anwendung in der Musikproduktion finden.}
 
 Aufgrund des Informationsverlusts durch die Quantisierung entsteht die Verzerrung.
 Diese kann folglich auch nicht aus dem Signal eliminiert werden.
@@ -158,7 +159,7 @@ Das Ziel der Rauschformung ist es, einen Filter $H[z]$ zu konzipieren, um das Ra
 
         \node [block,
             right=1cm of sum2
-        ]  (Q) {$Q[n]$};
+        ]  (Q) {$Q[z]$};
 
         \node [block,
             below=2cm of sum2
@@ -202,7 +203,7 @@ Das Ziel der Rauschformung ist es, einen Filter $H[z]$ zu konzipieren, um das Ra
         \draw[->] (H.west) node[above left]{$e' [n]$} -| (sum1.south);
 
     \end{tikzpicture}
-    \caption[Blockdiagramm der Rauschformung]{Blockdiagramm der Rauschformung aus \autocite{noise-shaping}. $x[n]$ bildet den Eingang, $y[n]$ den Ausgang und $d[n]$ das Dither. $Q[n]$ stellt den Quantizer dar und $H[z]$ den Rauschformungsfilter, welcher hier als dessen Z-Transformation gezeigt ist.}
+    \caption[Blockdiagramm der Rauschformung]{Blockdiagramm der Rauschformung aus \autocite{noise-shaping}. $x[n]$ bildet den Eingang, $y[n]$ den Ausgang und $d[n]$ das Dither. $Q[z]$ stellt den Quantizer dar und $H[z]$ den Rauschformungsfilter, welcher hier als dessen Z-Transformation gezeigt ist.}
     \label{fig:noise-shaping}
 \end{figure}
 
