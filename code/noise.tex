@@ -15,9 +15,13 @@ from scipy.fft import fft
 from scipy.interpolate import interp1d
 from scipy.optimize import minimize
 
-# increase matplotlib figure resolution
+# matplotlib figure config
 matplotlib.rcParams['figure.dpi'] = 1000
-plt.rcParams["figure.figsize"] = (6.299213, 3.149606) # 16cm by 8cm
+matplotlib.rcParams["figure.figsize"] = (6.299213, 3.149606) # 16cm by 8cm
+matplotlib.rcParams["font.family"] = "Minion Pro Regular"
+matplotlib.rcParams["text.usetex"] = True
+matplotlib.rcParams['font.size'] = 11
+%config InlineBackend.figure_formats = ["png"]
 \end{lstlisting}
 
 \hypertarget{rauschformungsfilter}{%
@@ -43,8 +47,6 @@ besteht wie folgt:
 \item
   Kernel durch Fenster fertigstellen
 \end{enumerate}
-
-Jeder aufgeführte Schritt ist in einem eigenen Codeblock gegeben.
 
 \hypertarget{psychoakustische-zielfunktion-nach-iso-erstellen}{%
 \subsubsection{Psychoakustische Zielfunktion nach ISO
@@ -137,7 +139,7 @@ spline_zero = np.append(optimized_spline[0], optimized_spline)
 omega = np.linspace(0, np.pi, len(spline_zero))
 Hd = interp1d(omega, spline_zero, kind="cubic", fill_value="extrapolate", bounds_error=False)
 
-N = 512
+N = 512 # N Taps to calculate
 k = np.linspace(0, N-1, N)
 Hk = Hd( (2 * np.pi * k )/N )
 
@@ -154,7 +156,6 @@ h = h * (2 / (np.pi))
 # shift fft to generate FIR kernel
 left = h[UL:]
 right = h[:UL]
-
 kernel = np.append(left, right)
 \end{lstlisting}
 
@@ -177,25 +178,23 @@ axs[0].plot(tap_xspace, window, color="#f18700", lw=1)
 markerline, stemlines, baseline = axs[0].stem(kernel, markerfmt=".")
 plt.setp(markerline, 'color', "#13a538")
 plt.setp(stemlines, 'color', "#13a538")
-plt.setp(stemlines, 'linestyle', 'dotted')
-plt.setp(stemlines, 'linewidth', 1)
+plt.setp(stemlines, 'linewidth', 0.5)
 
 axs[1].plot(tap_xspace, window, color="#f18700", lw=1)
 markerline, stemlines, baseline = axs[1].stem(kernel, markerfmt=".")
 plt.setp(markerline, 'color', "#13a538")
 plt.setp(stemlines, 'color', "#13a538")
-plt.setp(stemlines, 'linestyle', 'dotted')
-plt.setp(stemlines, 'linewidth', 1)
+plt.setp(stemlines, 'linewidth', 0.5)
 axs[1].set_xlim([TAPS//2 -18, TAPS//2 + 20])
 
 plt.show()
 \end{lstlisting}
 
-\includegraphics{./img/ce1bcfcc09df6843eca007d841c83f231c4e8479.png}
+\includegraphics{./img/242aea9dbf6c58987e03c8555202b017345941e0.png}
 
 Die grünen Punkte repräsentieren die individuellen \gls{fir} Taps. Die
 rote Linie ist die Baseline um 0 zur Referenz. Das Fenster wird durch
-den orangen Plot gezeichnet. Der linke Plot zeigt alle Taps. Der rechte
+den orangen Plot gezeichnet. Der linke Plot zeigt alle Taps, der rechte
 zeigt nur einen Ausschnitt um die Mitte zentriert.
 
 Wie zu erwarten sind die Taps, wie bei einem \gls{fir} Filter zu
@@ -217,24 +216,23 @@ geformt.
 \subsubsection{Testsignal}\label{testsignal}}
 
 Im Folgenden wird ein einfaches Testsignal erstellt. Dieses ist ein
-Sinus mit 100 Hertz bei einer Abtastrate \(f_s\) von 48 Kilohertz über
-eine Sekunde. Das Signal hat die allgemeine Form von
-\[f(t) = \sin (2 \pi f t)\]
+Sinus mit \(f=100\) Hertz bei einer Abtastrate \(f_s\) von 48 Kilohertz
+über eine Sekunde. Das Signal hat die allgemeine Form von
+\[s(t) = \sin (2 \pi f t)\]
 
 \begin{lstlisting}[language=Python]
 FS = 48000
 frequency = 100
 duration = 1
 t = np.linspace(0, duration, FS * duration)
-signal = (np.sin(frequency * 2 * np.pi * t))
+signal = np.sin(frequency * 2 * np.pi * t)
 \end{lstlisting}
 
-Das Signal wird nun auf 16 Bit skaliert. Es ist noch immer ein
-\gls{floating point} Wert. Anschließend wird die Fourier Transformation
-des Signals gezeigt. Darin ist ein klarer Hochpunkt bei \(10^2\) Hertz
-zu erkennen. Im Bereich darüber bis hin zur halben Abtastfrequenz
-befinden sich Konvertierungsartefakte, welche zu diesem Zeitpunkt
-ignoriert werden können.
+Anschließend wird die Fourier Transformation des Signals gezeigt. Darin
+ist ein klarer Hochpunkt bei \(10^2\) Hertz zu erkennen. Im Bereich
+darüber bis hin zur halben Abtastfrequenz befinden sich
+Konvertierungsartefakte, welche zu diesem Zeitpunkt ignoriert werden
+können.
 
 \begin{lstlisting}[language=Python]
 bits = 15 # 15 bits scale due to sign bit
@@ -242,13 +240,14 @@ scale = 2**(bits-1) # -1 for a bit headroom in anticipation of dither
 signal_scaled = (scale * signal).astype(np.int16)
 
 plt.plot(np.abs(fft(signal_scaled)[1:FS//2]), color="#0085c8", lw=1)
+plt.grid(which="both", linewidth=0.2)
 plt.loglog()
-plt.xlabel("f in Hz")
+plt.xlabel("$f$ in Hz")
 ylim=plt.gca().get_ylim()
 plt.show()
 \end{lstlisting}
 
-\includegraphics{./img/1e13dd00896ca85aa126ad99dcde56632518d4b2.png}
+\includegraphics{./img/de9c4c704937869e21407a577db0ca1c99eb2ed8.png}
 
 \hypertarget{quantisierung-und-dither}{%
 \subsubsection{Quantisierung und
@@ -257,7 +256,7 @@ Dither}\label{quantisierung-und-dither}}
 \begin{lstlisting}[language=Python]
 # TPDF dither using two uncorellated noise sources
 dither = np.random.rand(len(signal)) + np.random.rand(len(signal))
-dither_scaled = (dither * (2**10)).astype(np.int16) # scale dither (usually only to 1 LSB)
+dither_scaled = (dither * (2**8)).astype(np.int16) # scale dither (usually only to 1 LSB)
 
 # apply dither
 signal_scaled_dither = signal_scaled - dither_scaled
@@ -270,38 +269,31 @@ quantized_signal_dither = delta * np.floor((signal_scaled_dither / delta) + (1/2
 plt.plot(np.abs(fft(quantized_signal_dither)[1:FS//2]), color="#13a538", lw=1)
 plt.plot(np.abs(fft(quantized_signal)[1:FS//2]), color="#b2110e", lw=1)
 plt.plot(np.abs(fft(signal_scaled)[1:FS//2]), color="#0085c8", lw=1)
+plt.grid(which="both", linewidth=0.2)
 
-plt.legend([
-    "Dithered & Quantized",
-    "Quantized",
-    "Original",
-], loc="lower left")
+plt.legend(["Dithered \& Quantized", "Quantized", "Original"], loc="lower left", fontsize="small")
+plt.grid(which="both", linewidth=0.2)
 
 plt.loglog()
-plt.xlabel("f in Hz")
+plt.xlabel("$f$ in Hz")
 plt.gca().set_ylim(ylim)
 
 plt.show()
 \end{lstlisting}
 
-\includegraphics{./img/41398359f293db667c0a2100ef0e24205531cfb0.png}
+\includegraphics{./img/c64125e6cae2537b28f868d10f27a05614a96351.png}
 
 Dieses überzogene Beispiel demonstriert das Quantisierungsrauschen und
-den Effekt des Dithers. Jedes Signal zeigt noch immer den Ton bei 100
-Herzt. Das quantisierte Signal besitzt dazu einige harmonische Übertöne
-im Vergleich zum originalen. Das Signal mit Dither hat keine Übertöne,
-dafür jedoch ein wesentlich reduziertes \gls{snr}.
+den Effekt des Dithers. Jedes Signal zeigt noch immer den Ton bei
+\(100\) Herz. Das quantisierte Signal besitzt dazu einige harmonische
+Übertöne im Vergleich zum originalen. Das Signal mit Dither hat keine
+Übertöne, dafür jedoch ein wesentlich reduziertes \gls{snr}.
 
 \hypertarget{rauschformungsfilter-ruxfcckkopplungsschleife}{%
 \subsubsection{Rauschformungsfilter
 Rückkopplungsschleife}\label{rauschformungsfilter-ruxfcckkopplungsschleife}}
 
-Dieser Loop implementiert den gesamten Rauschformungsprozess. Dieser
-muss aufgrund des Feedbacks für jedes Sample ausgerechnet werden und
-kann nicht als paralleler Prozess realisiert werden. Ein Sample wird mit
-dem Feedback und Dither verrechnet und quantisiert. Der Fehler aus
-dieser Operation wird berechnet. Anschließend wird dieser Fehler durch
-Faltung gefiltert und rückgekoppelt.
+Dieser Loop implementiert den gesamten Rauschformungsprozess.
 
 \begin{lstlisting}[language=Python]
 quantized_signal_noise_shaped = [0] * len(signal)
@@ -329,21 +321,18 @@ for n in range(len(signal)):
 plt.plot(np.abs(fft(quantized_signal_dither)[1:FS//2]), color="#13a538", lw=1)
 plt.plot(np.abs(fft(quantized_signal_noise_shaped)[1:FS//2]), color="#59358c", lw=1)
 plt.plot(np.abs(fft(signal_scaled)[1:FS//2]), color="#0085c8", lw=1)
+plt.grid(which="both", linewidth=0.2)
 
-plt.legend([
-    "Dithered & Quantized",
-    "Noise-Shaped",
-    "Original"
-], loc="lower left")
+plt.legend(["Dithered \& Quantized", "Noise-Shaped", "Original"], loc="lower left", fontsize="small")
 
 plt.loglog()
-plt.xlabel("f in Hz")
+plt.xlabel("$f$ in Hz")
 plt.gca().set_ylim(ylim)
 
 plt.show()
 \end{lstlisting}
 
-\includegraphics{./img/dd90f155bf8c245aa3acbf7b017e8970bb7bdab9.png}
+\includegraphics{./img/8b39079d506951c45dafa9c94a1343cd68731ddc.png}
 
 In diesem Beispiel ist die spektrale Formung des Rauschens anschaulich
 demonstriert. Der Effekt ist hier, wie schon mehrmals erwähnt, stark
