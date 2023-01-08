@@ -14,54 +14,7 @@
 
 \section{Quantisierung und Dither}
 
-Eindimensionale Signale, die dem \citeauthor{shannon} Abtasttheorem \autocite{shannon} unterliegen, sind temporal diskret.
-Aufgrund des Theorems kann die originale kontinuierliche Version des Signals ohne Informationsverlust rekonstruiert werden.
-Die Wertemenge eines digitalen Signals wird, aufgrund nur endlichen Speichers, von einer theoretisch unendlich kontinuierlichen auf eine definiert begrenzte Wertemenge abgebildet.
-Bei diesem Vorgang, der Quantisierung, gehen Informationen irreversibel verloren.
-Ein solches diskretes Signal, mit dessen Original, ist in \autoref{fig:quantized-signal} gezeigt.
-Dabei ist auch der Quantisierungsfehler, das heißt die Differenz die der Quantisierungsprozess erzeugt, aufgeführt.
-In der digitalen Signalverarbeitung von Audiosignalen können sowohl \gls{floating point} als auch \gls{fixed point} Repräsentationen verwendet werden.
-Der größte Unterschied dabei ist die dynamische Reichweite -- die Differenz zwischen dem Minimum und Maximum.
-\autoref{tab:dynamic-range} führt die Reichweiten verschiedener Formate nach \citeauthor{dsp-guide} auf.
-Aufgrund der enorm großen Dynamik und der Einfachheit der Implementation ist \gls{floating point} oft die Wahl für digitale Signalverarbeitung \autocite[S. 68ff]{dsp-guide}.
-
-Zur Reproduktion von verarbeiteten Daten auf Endgeräten durch einen \gls{dac} oder auch nur zur endgültigen Speicherung oder Distribution wird eine \gls{fixed point} Repräsentation wünschenswert bzw. erforderlich.
-% \glsplural{dac} aktzeptieren generell keine Daten im \gls{floating point} Format.
-% Onehin kann kein Gerät eine analoge Spannung oder Strom mit einer solchen Dynamik wiedergeben.
-% Zur Speicherung und Distribution lohnt sich eine Effizientere Kodierung der Daten zu benutzten.
-Daher ergibt sich die Notwendigkeit für Quantisierung: die Konvertierung eines Signals von einer hohen zu einer niedrigen Bit-Tiefe.
-Eine Quantisierungsfunktion $Q$ wird nach \citeauthor{dither} für eine beliebige Quantisierungsgröße $\Delta$ definiert als
-\begin{equation}
-    \setequationentry{\foreignquote{english}{Mid-tread} Quantisierungsfunktion}
-    Q[z] = \Delta \left\lfloor \frac{z}{\Delta} + \frac{1}{2} \right\rfloor
-\end{equation}
-für einen arbiträren Wert $z$.
-Der Wert $\Delta$ repräsentiert dabei nach \citeauthor{dither} die Größe eines \gls{lsb}.
-Der durch die Quantisierung entstehende absolute numerische Fehler $e$ ist die Differenz dessen mit dem Eingang
-\begin{equation}
-\setequationentry{Quantisierungsfehler}
-e[n] = Q\bigl[x[n]\bigr] - x[n]
-\end{equation}
-
-Dieser Fehler ist in direkter Abhängigkeit zum Eingangssignal und ist daher periodisch und manifestiert sich als harmonische Verzerrung \autocites{dither}{noise-shaping}.
-Diese ist in den meisten Anwendungsfällen eine unerwünschte Eigenschaft.
-% \footnote{Harmonische Verzerrung kann in der kreativen Audioproduktion Anwendung finden}
-
-Aufgrund des Informationsverlusts durch die Quantisierung entsteht die Verzerrung.
-Diese kann folglich auch nicht aus dem Signal eliminiert werden.
-Durch das Hinzufügen von nichtdeterministischem Rauschen -- dem Dither -- vor der Quantisierung kann die Periodizität der Quantisierung reduziert werden.
-Das Signal bleibt verzerrt, jedoch ist die Verzerrung nicht mehr harmonisch, sondern bestenfalls ohne jegliche Korrelation zu dem Signal.
-Das Dither ist spektral Uniform und wird oft in einer \gls{tpdf} verwendet.
-\gls{tpdf} bezieht sich auf die Form, die das Histogramm der Ditherwerte über einen längeren Zeitraum annimmt.
-Ein \gls{tpdf} Dither setzt sich aus zwei unabhängigen Rauschquellen mit je einer Amplitude von $1$ \gls{lsb} zusammen \autocites{dither}[S. 23ff, S. 30ff, Figure 2-10b]{dsp-guide}.
-% \footnote{Bei der Implementation des Dithers muss darauf geachtet werden additive Überläufe und subtraktive Unterläufe zu vermeiden.}
-Damit kann die harmonische Verzerrung des quantisierten Signals mit einem durch das Dither induzierten geringeren \gls{snr} \enquote{getauscht} werden.
-Das Signal ist frei von unerwünschten Übertönen, jedoch nun mit einem stärkeren, spektral uniformem, Grundrauschen \autocites{dither}{noise-shaping}.
-Für viele Anwendungsfälle ist dieser Ausgangszustand zufriedenstellend.
-Jedoch ist dieser noch immer ein Kompromiss, welcher aus der Reduktion der Bit-Tiefe entsteht.
-Der Ideal-Zustand, ein Signal ohne Verzerrung, ist mit niedrigerer Bit-Tiefe unerreichbar.
-
-\begin{figure}[]
+\begin{figure}[h]
     \centering
     \begin{tikzpicture}
         \begin{axis}[
@@ -102,7 +55,55 @@ Der Ideal-Zustand, ein Signal ohne Verzerrung, ist mit niedrigerer Bit-Tiefe une
     \label{fig:quantized-signal}
 \end{figure}
 
-\begin{table}[]
+Eindimensionale Signale, die dem \citeauthor{shannon} Abtasttheorem unterliegen, sind temporal diskret.
+Aufgrund des Theorems kann die originale kontinuierliche Version des Signals ohne Informationsverlust rekonstruiert werden \autocite{shannon}.
+Die Wertemenge eines digitalen Signals wird, aufgrund nur endlichen Speichers, von einer theoretisch unendlich kontinuierlichen auf eine definiert begrenzte Wertemenge abgebildet.
+Bei diesem Vorgang, der Quantisierung, gehen Informationen irreversibel verloren.
+Ein solches diskret quantisiertes Signal und dessen kontinuierliches Original ist in \autoref{fig:quantized-signal} gezeigt.
+Der Quantisierungsfehler, also die durch den Quantisierungsprozess erzeugte Differenz, wird ebenfalls aufgeführt.
+In der digitalen Signalverarbeitung von Audiosignalen können sowohl \gls{floating point} als auch \gls{fixed point} Repräsentationen verwendet werden, um die zeit-diskreten Werte zu speichern.
+Der größte Unterschied dabei ist der Dynamikbereich -- die maximal mögliche Differenz zwischen dem Minimum und Maximum.
+\autoref{tab:dynamic-range} führt den Dynamikbereich verschiedener Formate nach \citeauthor{dsp-guide} auf.
+Aufgrund der enorm großen Dynamik und der Einfachheit der Implementation ist \gls{floating point} oft die bevorzugte Wahl für digitale Signalverarbeitung \autocite[S. 68ff]{dsp-guide}.
+
+Zur Reproduktion von verarbeiteten Daten auf analogen Endgeräten durch einen \gls{dac} oder auch nur zur endgültigen Speicherung oder Distribution wird jedoch eine \gls{fixed point} Repräsentation wünschenswert bzw. erforderlich.
+% \glsplural{dac} aktzeptieren generell keine Daten im \gls{floating point} Format.
+% Onehin kann kein Gerät eine analoge Spannung oder Strom mit einer solchen Dynamik wiedergeben.
+% Zur Speicherung und Distribution lohnt sich eine Effizientere Kodierung der Daten zu benutzten.
+Daher ergibt sich die Notwendigkeit für Quantisierung: die Konvertierung von einer hohen zu einer niedrigen Bit-Tiefe.
+Eine Quantisierungsfunktion $Q$ wird nach \citeauthor{dither} definiert als
+\begin{equation}
+    \setequationentry{\foreignquote{english}{Mid-tread} Quantisierungsfunktion}
+    Q[z] = \Delta \left\lfloor \frac{z}{\Delta} + \frac{1}{2} \right\rfloor
+\end{equation}
+für einen arbiträren Wert $z$.
+Der Quantisierungsgröße $\Delta$ repräsentiert dabei die Größe eines \gls{lsb}.
+Der durch die Quantisierung entstehende absolute numerische Fehler $e$ ist die Differenz zu dessen Eingangssignal $x[n]$:
+\begin{equation}
+\setequationentry{Quantisierungsfehler}
+e[n] = Q\bigl[x[n]\bigr] - x[n].
+\end{equation}
+
+Dieser Fehler ist in direkter Abhängigkeit zum Eingangssignal $x[n]$ und ist daher periodisch und manifestiert sich als harmonische Verzerrung \autocites{dither}{noise-shaping}.
+Diese ist in den meisten Anwendungsfällen eine unerwünschte Eigenschaft.
+% \footnote{Harmonische Verzerrung kann in der kreativen Audioproduktion Anwendung finden}
+
+% Aufgrund des Informationsverlusts durch die Quantisierung entsteht die Verzerrung.
+Die Verzerrung kann auch nicht aus dem Signal eliminiert werden.
+Informationen sind durch das nicht-lineare runden irreversibel verloren.
+Durch das Hinzufügen von nichtdeterministischem Rauschen -- dem Dither -- vor der Quantisierung kann die Periodizität der Quantisierung reduziert werden.
+Das Signal bleibt verzerrt, jedoch ist die Verzerrung nicht mehr harmonisch, sondern bestenfalls ohne jegliche Korrelation zu dem Quantisierungsfehler.
+Das Dither ist spektral Uniform und wird oft in einer \gls{tpdf} verwendet.
+\gls{tpdf} bezieht sich auf die Form, die das Histogramm der Ditherwerte über einen längeren Zeitraum annimmt.
+Ein \gls{tpdf} Dither setzt sich aus zwei unabhängigen Rauschquellen mit je einer Amplitude von $1$ \gls{lsb} zusammen \autocites{dither}[S. 23ff, S. 30ff, Figure 2-10b]{dsp-guide}.
+% \footnote{Bei der Implementation des Dithers muss darauf geachtet werden additive Überläufe und subtraktive Unterläufe zu vermeiden.}
+Das Signal ist frei von unerwünschten Übertönen, jedoch nun mit einem stärkeren, spektral uniformem, Grundrauschen.
+Damit kann die harmonische Verzerrung des quantisierten Signals mit einem durch das Dither induzierten geringeren \gls{snr} \enquote{getauscht} werden \autocites{dither}{noise-shaping}.
+Für manche Anwendungsfälle ist dieser Ausgangszustand zufriedenstellend.
+Jedoch ist dieser noch immer ein Kompromiss, welcher aus der Reduktion der Bit-Tiefe entsteht.
+Der Ideal-Zustand, ein Signal ohne Verzerrung, ist mit niedrigerer Bit-Tiefe dennoch unerreichbar.
+
+\begin{table}[t]
     \centering
     \caption[Dynamische Reichweite verschiedener Formate]{Dynamische Reichweite verschiedener Formate}
     \vspace*{11pt}
@@ -126,11 +127,12 @@ In den folgenden Abschnitten wird das Konzept der Rauschformung und eine Methode
 \subsection{Ziele und Konzept}
 
 Ein Rauschformungsfilter ist ein digitaler Filter der auf dem absoluten Fehler $e[n]$ der Quantisierung operiert und ein gefiltertes Signal rückkoppelt um ein gewünschtes Spektrum des Dithers zu erreichen.
-Die schematische Darstellung dieses ist in \autoref{fig:noise-shaping} aus \autocite{noise-shaping} gezeigt.
-\autoref{fig:noise-shaping-spectrum} zeigt ein erwünschtes Beispiel von Rauschformung im Spektralbereich.
+Die schematische Darstellung dieses Vorgangs ist in \autoref{fig:noise-shaping} aus \autocite{noise-shaping} gezeigt.
 Ein spektral uniformes Rauschen wird so manipuliert, sodass es nur minimal in einem bestimmten Frequenzbereich auftritt.
-In Audioanwendungen liegt die generell anerkannte maximal reproduzierbare Frequenz bei $20\si{kHz}$.
-Bei Abtastraten von nur dem doppelten (standardmäßig $44.1\si{kHz}$ oder $48\si{kHz}$) überdecken sich das Spektrum des Rauschens mit dem des Signals immer.
+\autoref{fig:noise-shaping-spectrum} zeigt ein beispielhaftes Resultat von Rauschformung im Spektralbereich.
+In Audioanwendungen liegt die generell anerkannte maximal zu reproduzierende Frequenz bei $20\si{kHz}$.
+Die Abtastrate $f_s$ muss wenigstens das doppelte davon betragen \autocite{shannon}.
+Bei Standardmäßigen Abtastraten von $44.1\si{kHz}$ oder $48\si{kHz}$ überdecken sich das Spektrum des Rauschens mit dem des Signals immer.
 Bei identischer Bandbreite des Signals, jedoch höheren Abtastraten, wie $96\si{kHz}$ oder $192\si{kHz}$ kann mehr Quantisierungsrauschen in höhere, für das Signal irrelevante, Oktaven verschoben werden.
 Dadurch wird der Effekt der Rauschformung verstärkt.
 Hohe Abtastraten sind jedoch Speicherplatz- und rechenintensiver und somit oft nicht praktikabel.
@@ -270,20 +272,19 @@ Der Filter $H[z]$ ist ein herkömmlicher digitaler Filter.
 Dieser könnte sowohl als \gls{fir} oder als \gls{iir} Filter implementiert werden.
 Eine \gls{iir} Implementation ist jedoch aufgrund der nicht-konstanten Verzögerung und Phasenverschiebungen für diese Anwendung nicht zu nutzen \autocite{frequency-sampling-method}.
 Da temporale Verzerrungen durch den Filter unerwünschte Interferenzen erzeugen könnten.
-Der Filter wird somit als \gls{fir} in folgender Form aus \autocite{noise-shaping} definiert
+Der Filter wird somit als \gls{fir} in folgender Form aus \citeauthor{noise-shaping} definiert als
 \begin{equation}
 \setequationentry{\acrshort{fir} Filter Übertragungsfunktion}
 H[z] = \sum_{n=0}^{N-1} h[n] z^{-1}
 \end{equation}
-Dabei ist $N$ die Länge des Filters und $h[n]$ die Koeffizienten.
-% \footnote{Die Länge $N$ kann frei gewählt werden, sie sollte jedoch Teil von $2^x \forall x \in \mathbb{N}_0^+$ sein.}
+wobei $N$ die Länge des Filters und $h[n]$ die Koeffizienten sind.
+Die Länge $N$ kann frei gewählt werden, sollte jedoch Teil von $2^x \forall x \in \mathbb{N}_1$ sein.
 
-Wie in \autocite{noise-shaping} führen wir eine kontinuierliche Zielfunktion $W(\omega)$ ein.
-$N$ sollte so gewählt sein, dass $W$ für eine bestimmte Nyquistfrequenz \autocite{shannon} nicht untertastet wird \autocite{SASPWEB2011}.
-Die Funktion wird zuerst eindimensional interpoliert.
+Wie in \citeauthor{noise-shaping} führen wir auch eine kontinuierliche Zielfunktion $W(\omega)$ ein.
+$N$ sollte so gewählt sein, dass $W$ für eine bestimmte Nyquistfrequenz \autocite{shannon} nicht unter-tastet wird \autocite{SASPWEB2011}.
 Dieser Vorgang ist abhängig von der jeweiligen Funktion.
-Die arbiträre Funktion wird dann nach dem Häufigkeitsstichprobenverfahren numerisch zu Filter Koeffizienten umgewandelt.
-Dabei wird die Funktion aus \autocite{frequency-sampling-method} zuerst diskretisiert mit
+Diese wandeln wir dann nach dem Häufigkeitsstichprobenverfahren numerisch zu Filter Koeffizienten um.
+Dabei wird die Funktion zuerst diskretisiert \autocite{frequency-sampling-method}:
 \begin{equation}
 \setequationentry{Auswertung der Zielfunktion für das Häufigkeitsstichprobenverfahren}
 W[k] = W \left( \frac{2\pi k}{N} \right) \quad k \in 0,1,2,\ldots,N-1
@@ -292,13 +293,13 @@ W[k] = W \left( \frac{2\pi k}{N} \right) \quad k \in 0,1,2,\ldots,N-1
 % \begin{equation*}
 % W[k] \equiv H[k] \quad \text{gilt hier} \quad W[k] = H[k]
 % \end{equation*}
-Da der Kernel (die Koeffizienten) eines \gls{fir} Filters $h[n]$ per Definition die Antwort des Filters auf einen Dirac-Impuls $\delta[n]$ ist, können wir diese durch die inverse Fourier Transformation der Übertragungsfunktion von dem Bildbereich in den Zeitbereich gewinnen \autocites{frequency-sampling-method}{frequency-sampling-method-2}{SASPWEB2011}.
+Da der Filterkernel (die Koeffizienten) eines \gls{fir} Filters $h[n]$ per Definition die Antwort des Filters auf einen Dirac-Impuls $\delta[n]$ ist, können wir die Koeffizienten durch die inverse Fourier Transformation der Übertragungsfunktion aus dem Bildbereich in den Zeitbereich konvertieren \autocites{frequency-sampling-method}{frequency-sampling-method-2}{SASPWEB2011}.
 Es folgt, dass im kontinuierlichen Raum gilt:
 \begin{equation}
 \setequationentry{Inversefouriertransformation im kontinuierlichen Zeitbereich}
 h(t) = \frac{1}{2\pi} \int_{-\pi}^{\pi} W(\omega) e^{j t \omega} \text{d} \omega
 \end{equation}
-Im diskreten Raum ist dieses angenähert
+Im diskreten Raum ist dies äquivalent zu:
 \begin{equation}
 \setequationentry{Diskrete Inversefouriertransformation für \acrshort{fir} Koeffizienten}
 h[n] = \bigl| \textit{IDFT} \left( W[k] \right) \bigr| \cdot c[n]
@@ -313,33 +314,33 @@ h[n] = \bigl| \textit{IDFT} \left( W[k] \right) \bigr| \cdot c[n]
 % Das wäre die inverse diskrete Fourier Tranformation.
 Das Fenster $c[n]$ aus \autoref{eq:coeffiecients} kann frei gewählt werden.
 Zu beachten ist jedoch, dass manche bestimmten Fenster vor allem bei dieser Methode Trunkierungsartefakte verringern können \autocite[S. 340f]{frequency-sampling-method-2}.
-Als Beispiel wird hier nur ein einfaches Kosinus-Fenster benutzt
+Als Beispiel wird hier nur ein einfaches Kosinus-Fenster benutzt:
 \begin{equation}
 \setequationentry{Kosinusfensterfunktion}
 c[n] = \frac{1}{2} \cos \left( \frac{2\pi \left( x - \frac{N}{2}\right) }{N}\right) + \frac{1}{2}
 \end{equation}
-Die Wahl der Funktion fällt hier nicht auf deren Leistung, sondern auf deren Einfachheit zur Demonstration.
+Die Wahl der Funktion fällt hier nicht auf deren besonderer Leistung, sondern auf deren Einfachheit zur Demonstration.
 
 \subsection{Psychoakustisch Ideale Funktion}
 
-Als psychoakustische Funktion kann die nicht-Linearität des menschlichen Ohrs ausgenutzt werden.
-Eine ideale Funktion kann aus einer modifizierten Abwandlung der $0$ Phon \gls{ath} Kurve aus \autocite{iso226} gewonnen werden.
+Zur psychoakustik nutzen wir die nicht-Linearität des menschlichen Ohrs aus.
+Eine ideale Funktion kann aus einer modifizierten Abwandlung der $0$ Phon \gls{ath} Kurve aus \citefield{iso226}{number} gewonnen werden.
 % \footnote{\enquote{Phon} ist eine absolute logarithmische Einheit zur Messung von akustischer Lautstärke definiert in \textit{ISO 532}.}
-Diese kann numerisch generiert werden \autocite{iso226matlab}.
-Anschließend wird diese durch Interpolation auf die gesamte relevante Bandbreite extrapoliert und in der Amplitude normalisiert werden.
-Wir erhalten die Funktion $A(f)$.
-Es kann nun durch Hartes oder Soft-Clipping ein Maximum der Funktion festgelegt werden.
-Beispielsweise kann
+Diese kann numerisch generiert werden \autocites{iso226}{iso226matlab}.
+Anschließend extrapolieren wir diese auf die gesamte relevante Bandbreite und normalisieren diese.
+Wir erhalten die Funktion $W(f)$.
+Es kann nun durch Hard- oder Soft-Clipping ein Maximum der Funktion festgelegt werden.
+Beispielsweise können wir
 \begin{equation}
 \setequationentry{Soft-Clipping Sättigungsfunktion}
-s(m, f) = m \tanh \left( \frac{A(f)}{m} \right)
+S(m, f) = m \cdot \tanh \left( \frac{W(f)}{m} \right)
 \end{equation}
-als Soft-Clipping Funktion mit dem Maximum $m$ verwendet werden.
-Durch das numerische Lösen eines \foreignquote{english}{Least-Squares} Problems, wie in \citeauthor{noise-shaping}, kann ein optimaler Gain gefunden werden.
-Dafür muss das globale Minimum von dem Gain $g$ für
+als Soft-Clipping Funktion mit dem Maximum $m$ verwenden.
+Durch das numerische Lösen eines \foreignquote{english}{Least-Squares} Problems, wie in \citeauthor{noise-shaping}, kann eine optimale Verstärkung (Gain) gefunden werden.
+Dafür muss das globale Minimum in Abhängigkeit von dem Gain $g$ für
 \begin{equation}
 \setequationentry{Gainoptimierung der Zielfunktion}
-p(g, m) = \left( \frac{1}{\pi} \int_{0}^{\pi} S(m, f) + g  \partial f \right)^2 = 0
+(g, m) \Rightarrow \left( \frac{2}{f_s} \int_{0}^{\frac{f_s}{2}} S(m, f) + g\; \text{d} f \right)^2 \to 0
 \label{eq:optimize}
 \end{equation}
 gefunden werden \autocite{noise-shaping}.
@@ -348,7 +349,7 @@ Diese Berechnung kann auch numerisch erfolgen.
 \section{Diskussion}
 
 Die konstruierte Filterfunktion wird nochmal in \autoref{fig:frequency} im Vergleich zur psychoakustischen Referenz $W[k]$ illustriert.
-Die Methode ist nicht pauschal garantiert akkurat zu sein, jedoch kann sie relativ effizient berechnet werden.
+Die Methode hat keine Garantie für alle Referenzen akkurat zu sein, jedoch kann sie relativ effizient berechnet werden.
 Auch durch die Modifikation und das Kriterium aus \autoref{eq:optimize} entsteht die abgebildete Diskrepanz zwischen den Systemen.
 Andere Referenzfunktionen, als die hier präsentierte, könnten bessere Ergebnisse liefern.
 Weiterhin ist die vorgestellte Methode auch nur Offline ausführbar; ein Online Version für temporale Rauschformung ist nicht vorgesehen, könnte jedoch möglicherweise auf leistungsstarken parallelen System realisiert werden.
@@ -356,15 +357,15 @@ Dazu müsste $W[k]$ in einer Abhängigkeit von $x[n]$ oder nur $n$ bzw. $t$ defi
 Dadurch könnte $W[k]$ kontinuierlich angepasst werden, woraus dauernd neue Koeffizienten für $h[n]$ berechnet werden.
 Im Vergleich zu \citeauthor{noise-shaping} liefert diese Methode vergleichbare Resultate.
 Der Unterschied liegt jedoch darin, dass hierbei arbiträre Funktionen verwendet werden können.
-Die \gls{ath} Kurve von \citeauthor{iso226} und \citeauthor{iso226matlab} wurde nur als Beispiel verwendet;
+Die \gls{ath} Kurve von \citefield{iso226}{number} und \citeauthor{iso226matlab} wurde nur als Beispiel verwendet;
 arbiträre Kurven können auch für andere Anwendungsgebiete außerhalb von Audio, welche von Rauschformung profitieren, durch diese Methode konstruiert werden.
 Der Vorteil der vorgestellten Methode ist die effiziente Berechnung der Koeffizienten, solang eine hinreichend präparierte Zielfunktion $W[k]$ im Vorhinein existiert.
 
-Um ideale Resultate des Quantisierungsprozesses zu erhalten, muss anwendungsspezifische Erfahrung in den Entscheidungsprozess mit einfließen.
-Eine pauschale Aussage über die spezifische Ausführung oder gar Notwendigkeit von Rauschformung für eine gegebene Applikation kann nicht gegeben werden und ist offen zu weiterer Forschung.
 Für Applikationen, in denen starke Quantisierung notwendig ist, beispielsweise für die analoge Reproduktion eines digitalen Signals durch einen \gls{dac} mit nur geringer Bit-Tiefe (gewöhnlich rund 16-Bit), ist Quantisierung unumgänglich.
 Um jedoch die entstehende Verzerrung zu minimieren, ist Rauschformung eine äußerst ökonomische Maßnahme.
 Die Ausnutzung von psychoakustischen Effekten durch die sorgfältige Wahl des Rauschformungsfilters, kann die wahrgenommene \gls{snr} die tatsächliche übertreffen.
+Um ideale Resultate eines Systems zu erhalten, muss anwendungsspezifische Erfahrung in den Entscheidungsprozess mit einfließen.
+Eine pauschale Aussage über die spezifische Ausführung oder gar Notwendigkeit von Rauschformung für eine gegebene Applikation kann nicht gegeben werden und ist offen zu weiterer Forschung.
 
 \begin{figure}
     \centering
