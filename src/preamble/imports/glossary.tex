@@ -8,10 +8,15 @@
 \usepackage[automake, nonumberlist, nogroupskip]{glossaries-extra}
 
 \renewcommand*{\glsclearpage}{} % remove gloassary pagebreak
-% \renewcommand*{\@@glossarysec}{section}
 \setabbreviationstyle[acronym]{long-short}
-\renewcommand*{\glstextformat}[1]{\textit{#1}} % cursive acronyms
-\renewcommand\glstreepredesc{\tabto{4cm}} % glossary spacing
+% \renewcommand*{\glstextformat}[1]{\textit{#1}} % cursive acronyms
+\setglossarysection{subsection}
+
+\setglossarystyle{long}
+\renewenvironment{theglossary}%
+ {\begin{longtable}[l]{lp{\glsdescwidth}}}%
+ {\end{longtable}}
+\renewcommand{\glsnamefont}[1]{\textbf{#1}}
 
 % --------------------------------- Acronyms -------------------------------- %
 \newacronym{snr}{SNR}{Signal to Noise Ratio}
@@ -25,8 +30,12 @@
 \newacronym{ath}{ATH}{Absolut Threshhold of Hearing}
 
 % --------------------------------- Glossary -------------------------------- %
-\newglossaryentry{floating point}{name={Floating Point}, description={Gleitkommazahl}}
+\newglossaryentry{floating point}{name={Floating Point}, description={Gleitkommazahl, oft nach IEEE754 implementiert}}
 \newglossaryentry{fixed point}{name={Fixed Point}, description={Ganzzahl}}
-\newglossaryentry{dBFS}{name={dBFS}, description={Dezibel Full-Scale}}
+\newglossaryentry{dBFS}{name={dBFS}, description={Dezibel Full-Scale. Der Maximale Wert, den ein digitales System verarbeiten kann liegt bei $0$\gls{dBFS}}}
+\newglossaryentry{soft-clipping}{name={Soft-Clipping}, description={Weiche Begrenzung an einen Maximalwert}}
+\newglossaryentry{hard-clipping}{name={Hard-Clipping}, description={Harte, nicht lineare, Begrenzung}}
+\newglossaryentry{phon}{name={Phon}, description={ Logarithmischer Lautstärkepegel, drückt die empfundene Lautstärke aus (Auch bekannt als Fon)}}
 
+\glsenablehyper
 \makeglossaries

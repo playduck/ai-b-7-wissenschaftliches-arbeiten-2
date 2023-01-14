@@ -51,32 +51,48 @@
         ]{sin(deg(x * pi)) - (round(4 * sin(deg(x * pi))) / 4)};
         \end{axis}
     \end{tikzpicture}
-    \caption[Quantisiertes Signal]{Quantisiertes Signal. Die grünen Datenpunkte weichen leicht von den originellen blauen ab. Die rote Linie zeigt den Quantisierungsfehler aus der Differenz zwischen dem kontinuierlichen und dem rekonstruierten diskreten Signal. Der Fehler kann maximal $\frac{1}{2}$\gls{lsb} betragen.}
+    \caption[Quantisiertes Signal]{Quantisiertes Signal. Die grünen Datenpunkte weichen leicht von den originellen blauen ab. Die rote Linie zeigt den Quantisierungsfehler aus der Differenz zwischen dem kontinuierlichen und dem rekonstruierten diskreten Signal. Der Fehler kann maximal $\nicefrac{1}{2}$ \gls{lsb} betragen.}
     \label{fig:quantized-signal}
 \end{figure}
 
 Eindimensionale Signale, die dem \citeauthor{shannon} Abtasttheorem unterliegen, sind temporal diskret.
 Aufgrund des Theorems kann die originale kontinuierliche Version des Signals ohne Informationsverlust rekonstruiert werden \autocite{shannon}.
 Die Wertemenge eines digitalen Signals wird, aufgrund nur endlichen Speichers, von einer theoretisch unendlich kontinuierlichen auf eine definiert begrenzte Wertemenge abgebildet.
-Bei diesem Vorgang, der Quantisierung, gehen Informationen irreversibel verloren.
+Bei diesem Vorgang -- Quantisierung -- gehen Informationen irreversibel verloren.
 Ein solches diskret quantisiertes Signal und dessen kontinuierliches Original ist in \autoref{fig:quantized-signal} gezeigt.
-Der Quantisierungsfehler, also die durch den Quantisierungsprozess erzeugte Differenz, wird ebenfalls aufgeführt.
-In der digitalen Signalverarbeitung von Audiosignalen können sowohl \gls{floating point} als auch \gls{fixed point} Repräsentationen verwendet werden, um die zeit-diskreten Werte zu speichern.
+Der Quantisierungsfehler, also die durch den Quantisierungsprozess entstehende Differenz, wird ebenfalls aufgeführt.
+In der digitalen Signalverarbeitung von Audiosignalen können sowohl \gls{floating point} als auch \gls{fixed point} Repräsentationen verwendet werden, um die zeit-diskreten Werte eines Signals zu speichern.
 Der größte Unterschied dabei ist der Dynamikbereich -- die maximal mögliche Differenz zwischen dem Minimum und Maximum.
 \autoref{tab:dynamic-range} führt den Dynamikbereich verschiedener Formate nach \citeauthor{dsp-guide} auf.
 Aufgrund der enorm großen Dynamik und der Einfachheit der Implementation ist \gls{floating point} oft die bevorzugte Wahl für digitale Signalverarbeitung \autocite[S. 68ff]{dsp-guide}.
+
+\begin{table}
+    \centering
+    \caption[Dynamische Reichweite verschiedener Formate]{Dynamische Reichweite verschiedener Formate}
+    \vspace*{11pt}
+    \begin{tabular}{lccc}
+        \hline
+        \textbf{Format} & \textbf{Min} in \gls{dBFS} & \textbf{Max} in \gls{dBFS} & $\boldsymbol{\Delta}$ in dB \\ \hline \hline
+        8-Bit Fixed & $-48$ & $0$ & $48$ \\ \hline
+        16-Bit Fixed & $-96$ & $0$ & $96$ \\ \hline
+        24-Bit Fixed & $-144$ & $0$ & $144$ \\ \hline
+        32-Bit Fixed & $-192$ & $0$ & $192$ \\ \hline
+        32-Bit Float & $-758$ & $770$ & $1528$ \\ \hline
+    \end{tabular}
+    \label{tab:dynamic-range}
+\end{table}
 
 Zur Reproduktion von verarbeiteten Daten auf analogen Endgeräten durch einen \gls{dac} oder auch nur zur endgültigen Speicherung oder Distribution wird jedoch eine \gls{fixed point} Repräsentation wünschenswert bzw. erforderlich.
 % \glsplural{dac} aktzeptieren generell keine Daten im \gls{floating point} Format.
 % Onehin kann kein Gerät eine analoge Spannung oder Strom mit einer solchen Dynamik wiedergeben.
 % Zur Speicherung und Distribution lohnt sich eine Effizientere Kodierung der Daten zu benutzten.
 Daher ergibt sich die Notwendigkeit für Quantisierung: die Konvertierung von einer hohen zu einer niedrigen Bit-Tiefe.
-Eine Quantisierungsfunktion $Q$ wird nach \citeauthor{dither} definiert als
+Eine Quantisierungsfunktion $Q$ wird nach \citeauthor{dither} definiert:
 \begin{equation}
     \setequationentry{\foreignquote{english}{Mid-tread} Quantisierungsfunktion}
     Q[z] = \Delta \left\lfloor \frac{z}{\Delta} + \frac{1}{2} \right\rfloor
 \end{equation}
-für einen arbiträren Wert $z$.
+Diese gilt für einen arbiträren Eingangswert $z$.
 Der Quantisierungsgröße $\Delta$ repräsentiert dabei die Größe eines \gls{lsb}.
 Der durch die Quantisierung entstehende absolute numerische Fehler $e$ ist die Differenz zu dessen Eingangssignal $x[n]$:
 \begin{equation}
@@ -102,22 +118,6 @@ Damit kann die harmonische Verzerrung des quantisierten Signals mit einem durch 
 Für manche Anwendungsfälle ist dieser Ausgangszustand zufriedenstellend.
 Jedoch ist dieser noch immer ein Kompromiss, welcher aus der Reduktion der Bit-Tiefe entsteht.
 Der Ideal-Zustand, ein Signal ohne Verzerrung, ist mit niedrigerer Bit-Tiefe dennoch unerreichbar.
-
-\begin{table}[t]
-    \centering
-    \caption[Dynamische Reichweite verschiedener Formate]{Dynamische Reichweite verschiedener Formate}
-    \vspace*{11pt}
-    \begin{tabular}{lccc}
-        \hline
-        \textbf{Format} & \textbf{Min} in \gls{dBFS} & \textbf{Max} in \gls{dBFS} & \textbf{Dynamik} in \textit{dB} \\ \hline \hline
-        8-Bit Fixed & $-48$ & $0$ & $48$ \\ \hline
-        16-Bit Fixed & $-96$ & $0$ & $96$ \\ \hline
-        24-Bit Fixed & $-144$ & $0$ & $144$ \\ \hline
-        32-Bit Fixed & $-192$ & $0$ & $192$ \\ \hline
-        32-Bit Float & $-758$ & $770$ & $1528$ \\ \hline
-    \end{tabular}
-    \label{tab:dynamic-range}
-\end{table}
 
 \section{Rauschformung}
 
@@ -272,13 +272,13 @@ Der Filter $H[z]$ ist ein herkömmlicher digitaler Filter.
 Dieser könnte sowohl als \gls{fir} oder als \gls{iir} Filter implementiert werden.
 Eine \gls{iir} Implementation ist jedoch aufgrund der nicht-konstanten Verzögerung und Phasenverschiebungen für diese Anwendung nicht zu nutzen \autocite{frequency-sampling-method}.
 Da temporale Verzerrungen durch den Filter unerwünschte Interferenzen erzeugen könnten.
-Der Filter wird somit als \gls{fir} in folgender Form aus \citeauthor{noise-shaping} definiert als
+Der Filter wird somit als \gls{fir} in folgender Form aus \citeauthor{noise-shaping} definiert als:
 \begin{equation}
 \setequationentry{\acrshort{fir} Filter Übertragungsfunktion}
 H[z] = \sum_{n=0}^{N-1} h[n] z^{-1}
 \end{equation}
-wobei $N$ die Länge des Filters und $h[n]$ die Koeffizienten sind.
-Die Länge $N$ kann frei gewählt werden, sollte jedoch Teil von $2^x \forall x \in \mathbb{N}_1$ sein.
+Dabei ist $N$ die Länge des Filters und $h[n]$ die Koeffizienten.
+Die Länge $N$ kann frei gewählt werden, sollte jedoch Teil von $2^x\ \forall x \in \mathbb{N}_1$ sein.
 
 Wie in \citeauthor{noise-shaping} führen wir auch eine kontinuierliche Zielfunktion $W(\omega)$ ein.
 $N$ sollte so gewählt sein, dass $W$ für eine bestimmte Nyquistfrequenz \autocite{shannon} nicht unter-tastet wird \autocite{SASPWEB2011}.
@@ -324,27 +324,25 @@ Die Wahl der Funktion fällt hier nicht auf deren besonderer Leistung, sondern a
 \subsection{Psychoakustisch Ideale Funktion}
 
 Zur psychoakustik nutzen wir die nicht-Linearität des menschlichen Ohrs aus.
-Eine ideale Funktion kann aus einer modifizierten Abwandlung der $0$ Phon \gls{ath} Kurve aus \citefield{iso226}{number} gewonnen werden.
+Eine ideale Funktion kann aus einer modifizierten Abwandlung der $0$ \gls{phon} \gls{ath} Kurve aus \citefield{iso226}{number} gewonnen werden.
 % \footnote{\enquote{Phon} ist eine absolute logarithmische Einheit zur Messung von akustischer Lautstärke definiert in \textit{ISO 532}.}
 Diese kann numerisch generiert werden \autocites{iso226}{iso226matlab}.
 Anschließend extrapolieren wir diese auf die gesamte relevante Bandbreite und normalisieren diese.
 Wir erhalten die Funktion $W(f)$.
-Es kann nun durch Hard- oder Soft-Clipping ein Maximum der Funktion festgelegt werden.
-Beispielsweise können wir
+Es kann nun durch \gls{hard-clipping} oder \gls{soft-clipping} ein Maximum der Funktion festgelegt werden.
+Beispielsweise können wir die folgende Funktion zum \gls{soft-clipping} mit dem Maximum $m$ verwenden:
 \begin{equation}
-\setequationentry{Soft-Clipping Sättigungsfunktion}
+\setequationentry{\gls{soft-clipping} Sättigungsfunktion}
 S(m, f) = m \cdot \tanh \left( \frac{W(f)}{m} \right)
 \end{equation}
-als Soft-Clipping Funktion mit dem Maximum $m$ verwenden.
 Durch das numerische Lösen eines \foreignquote{english}{Least-Squares} Problems, wie in \citeauthor{noise-shaping}, kann eine optimale Verstärkung (Gain) gefunden werden.
-Dafür muss das globale Minimum in Abhängigkeit von dem Gain $g$ für
+Dafür muss das globale Minimum in Abhängigkeit von dem Gain $g$ gefunden werden \autocite{noise-shaping}:
 \begin{equation}
 \setequationentry{Gainoptimierung der Zielfunktion}
-(g, m) \Rightarrow \left( \frac{2}{f_s} \int_{0}^{\frac{f_s}{2}} S(m, f) + g\; \text{d} f \right)^2 \to 0
+(g, m) \Rightarrow \left( \frac{2}{f_s} \int_{0}^{\nicefrac{f_s}{2}} S(m, f) + g\; \text{d} f \right)^2 \to 0
 \label{eq:optimize}
 \end{equation}
-gefunden werden \autocite{noise-shaping}.
-Diese Berechnung kann auch numerisch erfolgen.
+Diese Optimierung kann auch numerisch erfolgen.
 
 \section{Diskussion}
 
@@ -384,10 +382,10 @@ Eine pauschale Aussage über die spezifische Ausführung oder gar Notwendigkeit 
             legend pos=south west,
         ]
         \addplot[color=THDStrongBlue,smooth,thick] table[col sep=comma,header=true,x index=1,y index=2] {./data/ath.csv};
-        \addlegendentry[]{\gls{ath} nach \texttt{ISO226}};
+        \addlegendentry[]{\gls{ath} nach ISO226};
 
         \addplot[color=THDGreen,smooth,thick] table[col sep=comma,header=true,x index=1,y index=2] {./data/fir.csv};
-        \addlegendentry[]{\gls{fir} Filter};
+        \addlegendentry[]{Erstellter \gls{fir} Filter};
 
         \end{axis}
     \end{tikzpicture}
