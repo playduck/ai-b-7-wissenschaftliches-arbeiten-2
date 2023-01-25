@@ -193,7 +193,11 @@ axs[1].set_xlim([TAPS//2 -18, TAPS//2 + 20])
 plt.show()
 \end{lstlisting}
 
-\includegraphics{./img/e8b13057814bcb33ac952b78683ccdd09dd04e39.png}
+\begin{figure}
+  \centering
+  \includegraphics{./img/e8b13057814bcb33ac952b78683ccdd09dd04e39.png}
+  \caption[\acrshort{fir} Kernel]{\acrshort{fir} Kernel.}
+\end{figure}
 
 Die grünen Punkte repräsentieren die individuellen \gls{fir} Taps. Die
 rote Linie ist die Baseline bei 0. Das Fenster wird durch den orangen
@@ -251,7 +255,11 @@ ylim=plt.gca().get_ylim()
 plt.show()
 \end{lstlisting}
 
-\includegraphics{./img/83e40ac8704f77e2f58a6800bc3e6c99c2c385d0.png}
+\begin{figure}
+  \centering
+  \includegraphics{./img/83e40ac8704f77e2f58a6800bc3e6c99c2c385d0.png}
+  \caption[Numerische Fouriertransformation des Eingangssignals]{Numerische Fouriertransformation des Eingangssignals.}
+\end{figure}
 
 \hypertarget{dither}{%
 \subsubsection{Dither}\label{dither}}
@@ -277,7 +285,11 @@ plt.xlabel("$f$")
 plt.show()
 \end{lstlisting}
 
-\includegraphics{./img/5471d313422eed63396a88ef6e668194d821502f.png}
+\begin{figure}
+  \centering
+  \includegraphics{./img/5471d313422eed63396a88ef6e668194d821502f.png}
+  \caption[Histogramm und Spektrum des \acrshort{tpdf} Dither]{Histogramm und Spektrum des \acrshort{tpdf} Dither.}
+\end{figure}
 
 \hypertarget{quantisierung}{%
 \subsubsection{Quantisierung}\label{quantisierung}}
@@ -307,7 +319,11 @@ plt.gca().set_ylim(ylim)
 plt.show()
 \end{lstlisting}
 
-\includegraphics{./img/069db9acad0a7fc28eabd04fd9e5d0eebe5249bf.png}
+\begin{figure}
+  \centering
+  \includegraphics{./img/069db9acad0a7fc28eabd04fd9e5d0eebe5249bf.png}
+  \caption[Originales, Quantisiertes und Signal mit Dither]{Originales, Quantisiertes und Signal mit Dither.}
+\end{figure}
 
 Dieses überzogene Beispiel demonstriert das Quantisierungsrauschen und
 den Effekt des Dithers. Jedes Signal zeigt noch immer den Ton bei
@@ -359,7 +375,11 @@ plt.gca().set_ylim(ylim)
 plt.show()
 \end{lstlisting}
 
-\includegraphics{./img/9dd2df13a0e0795ec7f78029c2fd327701bd8ea4.png}
+\begin{figure}
+  \centering
+  \includegraphics{./img/9dd2df13a0e0795ec7f78029c2fd327701bd8ea4.png}
+  \caption[Originales, Quantisiertes und Signal mit spektral geformtem Dither]{Originales, Quantisiertes und Signal mit spektral geformtem Dither.}
+\end{figure}
 
 In diesem Beispiel ist die spektrale Formung des Rauschens anschaulich
 demonstriert. Der Effekt ist hier, wie schon mehrmals erwähnt, stark

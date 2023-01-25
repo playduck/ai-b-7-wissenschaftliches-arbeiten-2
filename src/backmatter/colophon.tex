@@ -14,44 +14,44 @@
 
     \centersection{Kolophon}
 
-    \begin{center}
-        \begin{tikzpicture}
-        \pgfplotsset{colormap={}{color=(THDWhite) color=(THDGrey) }}
-        \begin{axis}[
-            width=10cm,
-            hide axis,
-            enlargelimits=false,
-            disabledatascaling,
-            % view={23.5}{30},
-            view={20}{50},
-            % domain=-2:2,
-            % domain y =-2:2,
-            shader=interp,
-            % z buffer=sort,
-        ]
-        \begin{scope}[blend group=darken]
-            % \addplot3[mesh, samples=200]{(sin(deg(x*pi))/(x*pi)) * (sin(deg(y*pi))/(y*pi))};
-            \addplot3[
-                mesh,
-                % opacity=0.5,
-                domain=-1.5:1.5,
-                y domain=0:360,
-                samples=100,
-                samples y=50,
-                ]
-            (
-                {x*cos(y)}, {x*sin(y)},
-                {(sin(deg(x*cos(y)*pi))/(x*cos(y)*pi)) * (sin(deg(x*sin(y)*pi))/(x*sin(y)*pi))}
-            );
-        \end{scope}
-        \end{axis}
-     \end{tikzpicture}
-     \textcolor{THDGrey!40!THDWhite}{
-     \footnotesize{
-         $$\text{sinc}\left(x,y\right) = \frac{\sin \left( \pi x \right) \sin \left( \pi y\right)}{\pi^2 x y}$$
-         \textsc{Sinus Cardinalis}
-    }}
-    \end{center}
+    % \begin{center}
+    %     \begin{tikzpicture}
+    %     \pgfplotsset{colormap={}{color=(THDWhite) color=(THDGrey) }}
+    %     \begin{axis}[
+    %         width=10cm,
+    %         hide axis,
+    %         enlargelimits=false,
+    %         disabledatascaling,
+    %         % view={23.5}{30},
+    %         view={20}{50},
+    %         % domain=-2:2,
+    %         % domain y =-2:2,
+    %         shader=interp,
+    %         % z buffer=sort,
+    %     ]
+    %     \begin{scope}[blend group=darken]
+    %         % \addplot3[mesh, samples=200]{(sin(deg(x*pi))/(x*pi)) * (sin(deg(y*pi))/(y*pi))};
+    %         \addplot3[
+    %             mesh,
+    %             % opacity=0.5,
+    %             domain=-1.5:1.5,
+    %             y domain=0:360,
+    %             samples=100,
+    %             samples y=50,
+    %             ]
+    %         (
+    %             {x*cos(y)}, {x*sin(y)},
+    %             {(sin(deg(x*cos(y)*pi))/(x*cos(y)*pi)) * (sin(deg(x*sin(y)*pi))/(x*sin(y)*pi))}
+    %         );
+    %     \end{scope}
+    %     \end{axis}
+    %  \end{tikzpicture}
+    %  \textcolor{THDGrey!40!THDWhite}{
+    %  \footnotesize{
+    %      $$\text{sinc}\left(x,y\right) = \frac{\sin \left( \pi x \right) \sin \left( \pi y\right)}{\pi^2 x y}$$
+    %      \textsc{Sinus Cardinalis}
+    % }}
+    % \end{center}
 
     \noindent
     % \begin{tikzpicture}
